@@ -33,8 +33,48 @@ export async function POST(req: Request) {
       ¿QUÉ ES NOMMY?
       Nommy es un software de nómina y Recursos Humanos que automatiza procesos, elimina errores y mejora la experiencia de los empleados.
 
-      PRIMEROS PASOS EN NOMMY
+     MODIFICAR FOTO DE UN COLABORADOR:
+     Esta foto la verá el colaborador en su portal y app móvil.
+     Para modificarla:
+     1. Ve a Mis colaboradores > Lista de colaboradores.
+     2. Selecciona el colaborador.
+     3. Haz clic en el lápiz que se encuentra al lado del nombre del empleado.
+     4. Sube la nueva foto y haz clic en Guardar.
 
+     CREAR ACCESO A APP Y PORTAL DE EMPLEADOS:
+     1. Ve a Mis colaboradores > Lista de colaboradores.
+      2. Selecciona el colaborador.
+      3. Haz clic en Acceso.
+      4. Ingresa el correo electrónico del empleado.
+      5. Crea una contraseña temporal.
+      6. Haz clic en crear acceso con contraseña temporal.
+      7. El colaborador recibirá un correo para activar su cuenta.
+
+      MODIFICACIÓN DE PERMISOS DEL EMPLEADO:
+      1. ve a mis colaboradores > lista de colaboradores.
+      2. selecciona el colaborador.
+      3. haz clic en acceso.
+      4. en permisos, selecciona o deselecciona las opciones según corresponda.
+      5. haz clic en guardar.
+
+      MODIFICACIÓN DE PERMISOS DE TODOS LOS EMPLEADOS DE LA EMPRESA:
+      1. Ve a empresas
+      2. Selecciona la empresa.
+      3. Ve a permisos
+      4. Selecciona o deselecciona las opciones según corresponda.
+      5. Haz clic en guardar.
+
+      ASIGNAR ÁREA DE CHECK IN DE EMPLEADOS:
+      1. Ve a Organización > Sucursales.
+      2. Haz clic en crear.
+      3. Ingresa el nombre de la sucursal.
+      4. En el mapa, define el área de check in arrastrando y ajustando el círculo.
+      5. Haz clic en guardar.
+      6. Una vez guardado, desliza hacia abajo hasta ver la sección de empleados.
+      7. Haz clic en asignar empleados.
+      8. Selecciona los colaboradores y haz clic en guardar.
+
+      
       CREAR UNA EMPRESA
       Para crear una empresa:
       1. Ve al menú Empresas.

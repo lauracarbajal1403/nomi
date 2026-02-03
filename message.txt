@@ -1,0 +1,85 @@
+```
+Te muestro cómo sería una ruta simple para exponer el RAG:
+
+  Ejemplo de Ruta para RAG
+
+  // routes/rag.routes.ts
+  import { Router, Request, Response } from 'express';
+  import { ragService } from '../services/rag.service';
+
+  const router = Router();
+
+  // POST /api/rag/query
+  router.post('/query', async (req: Request, res: Response) => {
+    try {
+      const { question } = req.body;
+
+      if (!question || typeof question !== 'string') {
+        return res.status(400).json({ error: 'question is required' });
+      }
+
+      const response = await ragService.queryKnowledge(question);
+
+      return res.json({
+        answer: response.answer,
+        sources: response.sources,
+        confidence: response.confidence,
+        processingTime: response.processingTime
+      });
+    } catch (error) {
+      console.error('RAG query error:', error);
+      return res.status(500).json({ error: 'Failed to process query' });
+    }
+  });
+
+  // POST /api/rag/reindex (para actualizar el knowledge base)
+  router.post('/reindex', async (req: Request, res: Response) => {
+    try {
+      await ragService.reindexKnowledge();
+      const stats = await ragService.getSystemStats();
+      return res.json({ success: true, stats });
+    } catch (error) {
+      return res.status(500).json({ error: 'Failed to reindex' });
+    }
+  });
+
+  // GET /api/rag/stats
+  router.get('/stats', async (req: Request, res: Response) => {
+    try {
+      const stats = await ragService.getSystemStats();
+      return res.json(stats);
+    } catch (error) {
+      return res.status(500).json({ error: 'Failed to get stats' });
+    }
+  });
+
+  export { router as ragRouter };
+
+  En app.ts
+
+  import { ragRouter } from './routes/rag.routes';
+  import { ragService } from './services/rag.service';
+
+  // Inicializar RAG al arrancar
+  await ragService.initialize();
+
+  // Montar rutas
+  app.use('/api/rag', ragRouter);
+
+  Uso
+
+  # Hacer una pregunta
+  curl -X POST http://localhost:3000/api/rag/query \
+    -H "Content-Type: application/json" \
+    -d '{"question": "¿Cuáles son los costos de envío?"}'
+
+  # Respuesta
+  {
+    "answer": "Los envíos a CDMX cuestan $99...",
+    "sources": [
+      { "id": "envios_section_1", "content": "...", "score": 0.95 }
+    ],
+    "confidence": 0.95,
+    "processingTime": 1234
+  }
+```

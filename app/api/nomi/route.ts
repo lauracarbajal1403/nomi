@@ -33,7 +33,29 @@ export async function POST(req: Request) {
       ¿QUÉ ES NOMMY?
       Nommy es un software de nómina y Recursos Humanos que automatiza procesos, elimina errores y mejora la experiencia de los empleados.
 
-     MODIFICAR FOTO DE UN COLABORADOR:
+    CREAR O APLICAR ENCUESTA NOM-035:
+    Para crear o aplicar una encuesta NOM-035:
+    1. Ve al menú NOM-035.
+    2. Haz clic en Crear encuesta.
+    3. Llena la información solicitada.
+    4. Haz clic en Guardar.
+    5. Para aplicar la encuesta, selecciona la encuesta creada y haz clic en Aplicar.
+    6. Selecciona los colaboradores y haz clic en Enviar.
+    7. Los colaboradores podrán contestarla desde su portal o app móvil. Solo deben ingresar a encuestas en el portal de empleados y en la app deben ingresar a mi expediente y encuestas. 
+    Para consultar los resultados ve al menú NOM-035 y haz clic en la encuesta que deseas consultar.
+    
+    INVITAR O AGREGAR MIEMBRO A NOMMY:
+    Para invitar o agregar un miembro a Nommy:
+    1. Ve a Configuración > Equipo.
+    2. Haz clic en Invitar miembro.
+    3. Ingresa el correo electrónico del miembro.
+    4. Selecciona el rol y permisos correspondientes.
+    5. Haz clic en Enviar invitación.
+    El miembro recibirá un correo para crear su cuenta.
+
+    
+
+    MODIFICAR FOTO DE UN COLABORADOR:
      Esta foto la verá el colaborador en su portal y app móvil.
      Para modificarla:
      1. Ve a Mis colaboradores > Lista de colaboradores.

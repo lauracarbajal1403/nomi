@@ -69,6 +69,12 @@ export default function Chat() {
             ...conversationHistory,
             { role: 'user', content: userMessage },
           ],
+          sendEmail: {
+            enabled: true,
+            email: 'laura.carbajal@nommy.mx'
+          }
+
+          
         }),
       });
 

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
+import { MailService } from "@/lib/mail.service";
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    const { messages, sendEmail } = await req.json();
 
     const systemMessage = {
       role: "system",
@@ -15,9 +16,9 @@ export async function POST(req: Request) {
       REGLAS OBLIGATORIAS
       - Responde solo con información que esté explícitamente en la base de conocimiento.
       - No inventes información ni hagas suposiciones.
-      - No uses frases como “no sé”, “no tengo información” o similares.
+      - No uses frases como "no sé", "no tengo información" o similares.
       - Si la pregunta no está cubierta o es ambigua, responde únicamente:
-        “Para ayudarte con ese tema, por favor contacta a soporte@nommy.mx”.
+        "Para ayudarte con ese tema, por favor contacta a soporte@nommy.mx".
       - Responde en español neutro.
       - Usa un tono claro, profesional y directo.
       - Da respuestas concisas, en pasos cuando aplique.
@@ -53,7 +54,17 @@ export async function POST(req: Request) {
     5. Haz clic en Enviar invitación.
     El miembro recibirá un correo para crear su cuenta.
 
-    
+    JUSTIFICAR FALTA O RETRASO DE UN EMPLEADO:
+    Para justificar una falta o retraso de un empleado:
+    1. Ve a Mis colaboradores > Lista de colaboradores.
+    2. Selecciona el colaborador.
+    3. Haz clic asistencias.
+    4. Busca la fecha de la falta o retraso y haz clic en la hora en la que hizo check in.
+    5. Haz clic en Justificar.
+
+    CALCULAR COMPLEMENTO:
+    Sí se puede.
+    ¿Cómo calcularlo?
 
     MODIFICAR FOTO DE UN COLABORADOR:
      Esta foto la verá el colaborador en su portal y app móvil.
@@ -102,10 +113,10 @@ export async function POST(req: Request) {
       1. Ve al menú Empresas.
       2. Haz clic en Crear+.
       3. Registra la información solicitada. Los campos con * son obligatorios.
-      4. Si la nómina es manejada por el dueño, activa el switch “¿Es auto-administrada?”.
+      4. Si la nómina es manejada por el dueño, activa el switch "¿Es auto-administrada?".
       5. Haz clic en Guardar.
       6. En la información general, entra al apartado SAT y sube la constancia de situación fiscal en PDF.
-      7. Ve al apartado IMSS y crea un registro patronal con el botón “+ Crear un registro patronal”.
+      7. Ve al apartado IMSS y crea un registro patronal con el botón "+ Crear un registro patronal".
 
       REGISTRAR NÓMINAS
       Para registrar una nómina:
@@ -152,8 +163,8 @@ export async function POST(req: Request) {
       1. Ve a Mis colaboradores > Importación de incidencias.
       2. Selecciona la nómina.
       3. Descarga la plantilla.
-      4. Llena la hoja “Incidencias”.
-      5. No modifiques la hoja “Empleados”.
+      4. Llena la hoja "Incidencias".
+      5. No modifiques la hoja "Empleados".
       6. Sube el archivo para procesarlo.
 
       Organigrama:
@@ -301,6 +312,53 @@ export async function POST(req: Request) {
 
     const result = await openaiRes.json();
     const assistantReply = result.choices[0].message.content;
+
+    // Enviar correo si se solicita
+    if (sendEmail?.enabled && sendEmail?.email) {
+      try {
+        const mailService = new MailService();
+        
+        // Formatear la conversación para el correo
+        const conversationText = messages
+          .map((msg: any) => {
+            const role = msg.role === 'user' ? 'Usuario' : 'Nominik';
+            return `${role}: ${msg.content}`;
+          })
+          .join('\n\n');
+
+        const emailContent = `
+          <h2>Conversación con Nominik</h2>
+          <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-MX')}</p>
+          <hr>
+          <div style="white-space: pre-wrap; font-family: Arial, sans-serif;">
+            ${conversationText.replace(/\n/g, '<br>')}
+          </div>
+          <hr>
+          <p style="color: #666; font-size: 12px;">
+            Este correo fue generado automáticamente por Nominik, el asistente virtual de Nommy.
+          </p>
+        `;
+
+        await mailService.sendEmail({
+          to: sendEmail.email,
+          subject: 'Conversación con Nominik - Nommy',
+          html: emailContent,
+        });
+
+        return NextResponse.json({ 
+          text: assistantReply,
+          emailSent: true 
+        });
+      } catch (emailError) {
+        console.error("Error al enviar correo:", emailError);
+        // Continuar con la respuesta aunque falle el correo
+        return NextResponse.json({ 
+          text: assistantReply,
+          emailSent: false,
+          emailError: "No se pudo enviar el correo"
+        });
+      }
+    }
 
     return NextResponse.json({ text: assistantReply });
 

@@ -341,7 +341,7 @@ export async function POST(req: Request) {
           </p>
         `;
 
-        await mailService.sendEmail({
+        await mailService.sendMail({
           to: sendEmail.email,
           subject: 'Conversación con Nominik - Nommy',
           html: emailContent,

@@ -313,6 +313,7 @@ export async function POST(req: Request) {
     }
 
     const result = await openaiRes.json();
+    // En tu API route (route.ts)
     const assistantReply = result.choices[0].message.content;
 
     // Enviar correo si se solicita
@@ -320,8 +321,14 @@ export async function POST(req: Request) {
       try {
         const mailService = new MailService();
         
-        // Formatear la conversación para el correo
-        const conversationText = messages
+        // ✅ Incluir TODOS los mensajes + la respuesta actual
+        const fullConversation = [
+          ...messages,
+          { role: 'user', content: messages[messages.length - 1]?.content || '' },
+          { role: 'assistant', content: assistantReply }
+        ];
+        
+        const conversationText = fullConversation
           .map((msg: any) => {
             const role = msg.role === 'user' ? 'Usuario' : 'Nominik';
             return `${role}: ${msg.content}`;
@@ -337,27 +344,28 @@ export async function POST(req: Request) {
           </div>
           <hr>
           <p style="color: #666; font-size: 12px;">
-            Este correo fue generado automáticamente por Nominik, el asistente virtual de Nommy.
+            Este correo fue generado automáticamente por Nominik.
           </p>
         `;
 
-        await mailService.sendMail({
+        const result = await mailService.sendMail({
           to: sendEmail.email,
           subject: 'Conversación con Nominik - Nommy',
           html: emailContent,
         });
+
+        console.log('✅ Correo enviado exitosamente:', result); // ✅ Log de éxito
 
         return NextResponse.json({ 
           text: assistantReply,
           emailSent: true 
         });
       } catch (emailError) {
-        console.error("Error al enviar correo:", emailError);
-        // Continuar con la respuesta aunque falle el correo
+        console.error("❌ Error detallado al enviar correo:", emailError); // ✅ Log detallado
         return NextResponse.json({ 
           text: assistantReply,
           emailSent: false,
-          emailError: "No se pudo enviar el correo"
+          emailError: emailError instanceof Error ? emailError.message : "Error desconocido"
         });
       }
     }

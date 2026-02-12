@@ -617,11 +617,27 @@ export async function POST(req: Request) {
 
         await mailService.sendMail({
           to: sendEmail.email,
-          subject: isTicketRequest ? 'Nuevo Ticket de Soporte - Nommy' : 'Resumen de conversación - Nominik',
-          html: emailContent,
+          subject: isTicketRequest ? '🔴 Nuevo Ticket de Soporte - Nommy' : 'Resumen de conversación - Nominik',
+          from: process.env.SMTP_USER, // Aseguramos que el 'from' sea el usuario autenticado
+          html: `
+            <div style="font-family: sans-serif;">
+              <h2>Registro de Conversación</h2>
+              <p><strong>Usuario:</strong> ${sendEmail.email}</p>
+              <hr>
+              <div style="white-space: pre-wrap;">${conversationText.replace(/\n/g, '<br>')}</div>
+            </div>
+          `
         });
+        
+            console.log('✅ Correo enviado con éxito');
+            return NextResponse.json({ text: assistantReply, emailSent: true });
 
-        console.log('✅ Correo enviado a:', sendEmail.email);
+          } catch (emailError) {
+            console.error("❌ Error en el proceso de email:", emailError);
+            // Respondemos al usuario aunque falle el mail para no bloquear el chat
+            return NextResponse.json({ text: assistantReply, emailSent: false });
+          }
+        }
 
         return NextResponse.json({ 
           text: assistantReply,

@@ -1,19 +1,18 @@
+
+         
 import { NextResponse } from "next/server";
-import { MailService } from "@/lib/mail.service";
+import { MailService } from "@/lib/mail.service"; // Ajusta la ruta si es necesario
 
 export async function POST(req: Request) {
   try {
     const { messages, sendEmail } = await req.json();
 
+    // 1. Llamada a OpenAI (Mantén tu lógica actual)
     const systemMessage = {
       role: "system",
-      content: `
-         TU ROL
+      content: `TU ROL
 
       Respondes preguntas de usuarios sobre el uso de la plataforma Nommy, basándote ÚNICAMENTE en la información incluida en la base de conocimiento.
-
-
-
       REGLAS OBLIGATORIAS
 
       - Responde solo con información que esté explícitamente en la base de conocimiento.
@@ -545,117 +544,65 @@ export async function POST(req: Request) {
       SOPORTE
 
       Si necesitas ayuda adicional, contacta a soporte@nommy.mx
-      `,
+      `
     };
 
-    // Unimos el mensaje de sistema con el historial recibido
-    const fullConversation = [systemMessage, ...messages];
-
-    const openaiRes = await fetch(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: fullConversation,
-          temperature: 0.6,
-        }),
-      }
-    );
-
-    if (!openaiRes.ok) {
-      const err = await openaiRes.text();
-      console.error("OpenAI error:", err);
-      return NextResponse.json(
-        { error: "Error en OpenAI" },
-        { status: 500 }
-      );
-    }
+    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [systemMessage, ...messages],
+      }),
+    });
 
     const result = await openaiRes.json();
     const assistantReply = result.choices[0].message.content;
 
-    // Lógica de envío de correo
-    // Se envía si el frontend lo pide explícitamente O si el asistente detecta que debe crear un ticket
-    const isTicketRequest = assistantReply.includes("crearé un ticket");
-    
+    // 2. Lógica de envío de correo detectando Ticket o Finalización
+    const isTicketRequest = assistantReply.toLowerCase().includes("ticket");
+
     if ((sendEmail?.enabled || isTicketRequest) && sendEmail?.email) {
       try {
         const mailService = new MailService();
-        
-        // Construimos el historial para el correo sin duplicar el último mensaje
-        const historyForEmail = [
-          ...messages,
-          { role: 'assistant', content: assistantReply }
-        ];
-        
-        const conversationText = historyForEmail
-          .map((msg: any) => {
-            const role = msg.role === 'user' ? 'Usuario' : 'Nominik';
-            return `${role}: ${msg.content}`;
-          })
-          .join('\n\n');
 
-        const emailContent = `
-          <div style="font-family: Arial, sans-serif; color: #333;">
-            <h2 style="color: #2563eb;">Conversación con Nominik</h2>
-            <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' })}</p>
-            <hr style="border: 0; border-top: 1px solid #eee;">
-            <div style="white-space: pre-wrap; background-color: #f9fafb; padding: 15px; border-radius: 8px;">
-              ${conversationText.replace(/\n/g, '<br>')}
-            </div>
-            <hr style="border: 0; border-top: 1px solid #eee;">
-            <p style="color: #666; font-size: 12px;">
-              Este correo fue generado automáticamente por el sistema de soporte de Nommy.
-            </p>
-          </div>
-        `;
+        // Verificamos conexión (Tu método verifyConnection)
+        const isReady = await mailService.verifyConnection();
+        if (!isReady) {
+          console.error("❌ MailService: No se pudo conectar al SMTP. Revisa Vercel envs.");
+        } else {
+          const conversationText = [...messages, { role: 'assistant', content: assistantReply }]
+            .map((msg: any) => `${msg.role === 'user' ? 'Usuario' : 'Nominik'}: ${msg.content}`)
+            .join('\n\n');
 
-        await mailService.sendMail({
-          to: sendEmail.email,
-          subject: isTicketRequest ? '🔴 Nuevo Ticket de Soporte - Nommy' : 'Resumen de conversación - Nominik',
-          from: process.env.SMTP_USER, // Aseguramos que el 'from' sea el usuario autenticado
-          html: `
-            <div style="font-family: sans-serif;">
-              <h2>Registro de Conversación</h2>
-              <p><strong>Usuario:</strong> ${sendEmail.email}</p>
-              <hr>
-              <div style="white-space: pre-wrap;">${conversationText.replace(/\n/g, '<br>')}</div>
-            </div>
-          `
-        });
-        
-           
-
-          
-        return NextResponse.json({ 
-          text: assistantReply,
-          emailSent: true 
-        });
-
-      } catch (emailError) {
-        console.error("❌ Error al enviar correo:", emailError);
-        // Devolvemos la respuesta del asistente de todos modos para no romper la experiencia del usuario
-        return NextResponse.json({ 
-          text: assistantReply,
-          emailSent: false,
-          emailError: emailError instanceof Error ? emailError.message : "Error desconocido"
-        });
+          // IMPORTANTE: Usamos el método de instancia 'sendMail' que ya tienes
+          await mailService.sendMail({
+            to: sendEmail.email.trim(), // Quitamos espacios accidentales
+            subject: isTicketRequest ? '🎟️ Nuevo Ticket de Soporte' : '📩 Resumen de Conversación',
+            from: process.env.SMTP_USER, // Obligatorio para muchos SMTP
+            html: `
+              <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                <h2 style="color: #4db8a8;">Reporte de Nominik</h2>
+                <hr />
+                <div style="white-space: pre-wrap;">${conversationText.replace(/\n/g, '<br>')}</div>
+              </div>
+            `
+          });
+          console.log("✅ Correo enviado exitosamente a:", sendEmail.email);
+        }
+      } catch (mailErr) {
+        // Logueamos el error pero no bloqueamos la respuesta al usuario
+        console.error("❌ Error crítico en MailService:", mailErr);
       }
     }
 
-    // Respuesta estándar si no se requiere envío de correo
     return NextResponse.json({ text: assistantReply });
 
   } catch (error) {
-    console.error("API error:", error);
-    return NextResponse.json(
-      { error: "Error al procesar el mensaje" },
-      { status: 500 }
-    );
+    console.error("API Route Error:", error);
+    return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }
 }

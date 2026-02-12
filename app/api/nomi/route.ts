@@ -493,8 +493,6 @@ export async function POST(req: Request) {
 
       Permite crear vacantes, publicarlas y ver detalles.
 
-
-
       Pipeline:
 
       Muestra candidatos con porcentaje de match generado por IA.

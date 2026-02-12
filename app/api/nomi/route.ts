@@ -629,16 +629,9 @@ export async function POST(req: Request) {
           `
         });
         
-            console.log('✅ Correo enviado con éxito');
-            return NextResponse.json({ text: assistantReply, emailSent: true });
+           
 
-          } catch (emailError) {
-            console.error("❌ Error en el proceso de email:", emailError);
-            // Respondemos al usuario aunque falle el mail para no bloquear el chat
-            return NextResponse.json({ text: assistantReply, emailSent: false });
-          }
-        }
-
+          
         return NextResponse.json({ 
           text: assistantReply,
           emailSent: true 

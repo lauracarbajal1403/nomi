@@ -70,9 +70,7 @@ export default function Chat() {
       });
 
       if (response.ok) {
-        alert("Conversación finalizada y enviada por correo.");
-        // Opcional: limpiar chat o redirigir
-        // setMessages([]);
+        setMessages([]);
       }
     } catch (error) {
       console.error("Error al finalizar:", error);

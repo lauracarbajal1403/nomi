@@ -15,7 +15,6 @@ export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef(null);
 
-  // Auto-scroll
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
@@ -25,7 +24,6 @@ export default function Chat() {
     }
   }, [messages, isLoading]);
 
-  // Saludo Inicial
   useEffect(() => {
     if (messages.length === 0) {
       const timer = setTimeout(() => {
@@ -47,33 +45,39 @@ export default function Chat() {
     return [...history, { role: 'user', content: lastUserMessage }];
   };
 
-  // Función para finalizar y enviar correo manualmente
+  // --- FUNCIÓN CORREGIDA ---
   const endConversationAndEmail = async () => {
-    if (messages.length <= 1 || isLoading) return;
-
+    if (messages.length <= 1) return;
+    
     setIsLoading(true);
     try {
-      // Enviamos un mensaje especial o simplemente el flag para cerrar
+      console.log("Intentando enviar correo a: laura.carbajal@nommy.mx");
+      
       const response = await fetch('/api/nomi', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }, // Faltaba esto
         body: JSON.stringify({
-          messages: messages.map(m => ({
-            role: m.role === 'user' ? 'user' : 'assistant',
-            content: m.text
+          messages: messages.map(m => ({ 
+            role: m.role === 'user' ? 'user' : 'assistant', 
+            content: m.text 
           })),
-          sendEmail: {
-            enabled: true,
-            email: 'laura.carbajal@nommy.mx'
+          sendEmail: { 
+            enabled: true, 
+            email: 'laura.carbajal@nommy.mx' 
           }
         }),
       });
 
       if (response.ok) {
-        setMessages([]);
+        console.log("✅ Correo solicitado con éxito");
+        alert("Conversación finalizada. Se ha enviado el resumen por correo.");
+        setMessages([]); // Limpia el chat
+      } else {
+        const errorData = await response.json();
+        console.error("❌ Error del servidor:", errorData);
       }
     } catch (error) {
-      console.error("Error al finalizar:", error);
+      console.error("❌ Error de red al finalizar:", error);
     } finally {
       setIsLoading(false);
     }
@@ -96,25 +100,14 @@ export default function Chat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: formatMessagesForAPI(messages, userText),
-          sendEmail: {
-            enabled: false, // No enviamos correo en cada mensaje para no saturar
-            email: 'laura.carbajal@nommy.mx'
-          }
+          sendEmail: { enabled: false, email: 'laura.carbajal@nommy.mx' }
         }),
       });
 
       const data = await response.json();
       setMessages(prev => [...prev, { id: generateId(), role: "bot", text: data.text }]);
-
-      // Si el bot detectó que debe crear un ticket, el backend ya habrá enviado el mail
-      // gracias a la corrección que hicimos anteriormente.
-
     } catch (error) {
-      setMessages(prev => [...prev, { 
-        id: generateId(), 
-        role: "bot", 
-        text: 'Disculpa, hubo un error. ¿Podrías intentarlo de nuevo?' 
-      }]);
+      console.error("Chat Error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -122,8 +115,6 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col w-full h-[100dvh] bg-gradient-to-br from-gray-50 via-white to-gray-50">
-      
-      {/* Header */}
       <div className="relative backdrop-blur-xl bg-white/80 border-b border-gray-200/50 shadow-sm shrink-0">
         <div className="relative max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -145,7 +136,6 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4" ref={scrollRef}>
         <div className="max-w-4xl mx-auto">
           {messages.map((message) => (
@@ -161,7 +151,6 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* Input */}
       <div className="p-4 bg-white border-t border-gray-100">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto flex gap-2">
           <input

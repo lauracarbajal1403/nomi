@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Sparkles, LogOut } from 'lucide-react';
+import { Send, Sparkles } from 'lucide-react';
 
 const generateId = () => {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -45,44 +45,6 @@ export default function Chat() {
     return [...history, { role: 'user', content: lastUserMessage }];
   };
 
-  // --- FUNCIÓN CORREGIDA ---
-  const endConversationAndEmail = async () => {
-    if (messages.length <= 1) return;
-    
-    setIsLoading(true);
-    try {
-      console.log("Intentando enviar correo a: laura.carbajal@nommy.mx");
-      
-      const response = await fetch('/api/nomi', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }, // Faltaba esto
-        body: JSON.stringify({
-          messages: messages.map(m => ({ 
-            role: m.role === 'user' ? 'user' : 'assistant', 
-            content: m.text 
-          })),
-          sendEmail: { 
-            enabled: true, 
-            email: 'laura.carbajal@nommy.mx' 
-          }
-        }),
-      });
-
-      if (response.ok) {
-        console.log("✅ Correo solicitado con éxito");
-        alert("Conversación finalizada. Se ha enviado el resumen por correo.");
-        setMessages([]); // Limpia el chat
-      } else {
-        const errorData = await response.json();
-        console.error("❌ Error del servidor:", errorData);
-      }
-    } catch (error) {
-      console.error("❌ Error de red al finalizar:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
@@ -105,7 +67,28 @@ export default function Chat() {
       });
 
       const data = await response.json();
-      setMessages(prev => [...prev, { id: generateId(), role: "bot", text: data.text }]);
+      const botReply = data.text;
+
+      setMessages(prev => [...prev, { id: generateId(), role: "bot", text: botReply }]);
+
+      // Envío automático si el bot detecta que se necesita un ticket
+      const isTicket = botReply.toLowerCase().includes("ticket");
+      if (isTicket) {
+        const allMessages = [
+          ...formatMessagesForAPI(messages, userText),
+          { role: 'assistant', content: botReply }
+        ];
+
+        fetch('/api/nomi', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: allMessages,
+            sendEmail: { enabled: true, email: 'laura.carbajal@nommy.mx' }
+          }),
+        }).catch(err => console.error("❌ Error enviando correo automático:", err));
+      }
+
     } catch (error) {
       console.error("Chat Error:", error);
     } finally {
@@ -116,23 +99,14 @@ export default function Chat() {
   return (
     <div className="flex flex-col w-full h-[100dvh] bg-gradient-to-br from-gray-50 via-white to-gray-50">
       <div className="relative backdrop-blur-xl bg-white/80 border-b border-gray-200/50 shadow-sm shrink-0">
-        <div className="relative max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <img src="/images/design-mode/nominik.jpg" alt="Nominik" className="rounded-full w-12 h-12 border-2 border-white shadow-lg" />
-            <div>
-              <h3 className="text-gray-900 font-bold text-lg flex items-center gap-2">Nominik <Sparkles className="w-4 h-4 text-[#4db8a8]" /></h3>
-              <p className="text-sm text-gray-500 font-medium">Asistente Virtual IA</p>
-            </div>
+        <div className="relative max-w-5xl mx-auto px-4 py-4 flex items-center gap-4">
+          <img src="/images/design-mode/nominik.jpg" alt="Nominik" className="rounded-full w-12 h-12 border-2 border-white shadow-lg" />
+          <div>
+            <h3 className="text-gray-900 font-bold text-lg flex items-center gap-2">
+              Nominik <Sparkles className="w-4 h-4 text-[#4db8a8]" />
+            </h3>
+            <p className="text-sm text-gray-500 font-medium">Asistente Virtual IA</p>
           </div>
-          
-          <button 
-            onClick={endConversationAndEmail}
-            disabled={messages.length <= 1 || isLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full text-sm font-bold hover:bg-red-100 transition-colors disabled:opacity-30"
-          >
-            <LogOut className="w-4 h-4" />
-            Finalizar
-          </button>
         </div>
       </div>
 

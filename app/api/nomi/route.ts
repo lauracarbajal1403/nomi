@@ -1,7 +1,7 @@
-
-         
 import { NextResponse } from "next/server";
-import { MailService } from "@/lib/mail.service"; // Ajusta la ruta si es necesario
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   try {
@@ -542,7 +542,7 @@ export async function POST(req: Request) {
       SOPORTE
 
       Si necesitas ayuda adicional, contacta a soporte@nommy.mx
-      `
+      `,
     };
 
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -565,40 +565,37 @@ export async function POST(req: Request) {
 
     if ((sendEmail?.enabled || isTicketRequest) && sendEmail?.email) {
       try {
-        const mailService = new MailService();
+        const conversationText = [...messages, { role: "assistant", content: assistantReply }]
+          .map((msg: { role: string; content: string }) =>
+            `${msg.role === "user" ? "Usuario" : "Nominik"}: ${msg.content}`
+          )
+          .join("\n\n");
 
-        // Verificamos conexión (Tu método verifyConnection)
-        const isReady = await mailService.verifyConnection();
-        if (!isReady) {
-          console.error("❌ MailService: No se pudo conectar al SMTP. Revisa Vercel envs.");
+        const { error } = await resend.emails.send({
+          from: process.env.RESEND_FROM_EMAIL ?? "Nominik <no-reply@tudominio.com>",
+          to: sendEmail.email.trim(),
+          subject: isTicketRequest ? "🎟️ Nuevo Ticket de Soporte" : "📩 Resumen de Conversación",
+          html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+              <h2 style="color: #4db8a8;">Reporte de Nominik</h2>
+              <hr />
+              <div style="white-space: pre-wrap;">${conversationText.replace(/\n/g, "<br>")}</div>
+            </div>
+          `,
+        });
+
+        if (error) {
+          console.error("❌ Resend error:", error);
         } else {
-          const conversationText = [...messages, { role: 'assistant', content: assistantReply }]
-            .map((msg: any) => `${msg.role === 'user' ? 'Usuario' : 'Nominik'}: ${msg.content}`)
-            .join('\n\n');
-
-          // IMPORTANTE: Usamos el método de instancia 'sendMail' que ya tienes
-          await mailService.sendMail({
-            to: sendEmail.email.trim(), // Quitamos espacios accidentales
-            subject: isTicketRequest ? '🎟️ Nuevo Ticket de Soporte' : '📩 Resumen de Conversación',
-            from: process.env.SMTP_USER, // Obligatorio para muchos SMTP
-            html: `
-              <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-                <h2 style="color: #4db8a8;">Reporte de Nominik</h2>
-                <hr />
-                <div style="white-space: pre-wrap;">${conversationText.replace(/\n/g, '<br>')}</div>
-              </div>
-            `
-          });
           console.log("✅ Correo enviado exitosamente a:", sendEmail.email);
         }
       } catch (mailErr) {
         // Logueamos el error pero no bloqueamos la respuesta al usuario
-        console.error("❌ Error crítico en MailService:", mailErr);
+        console.error("❌ Error crítico al enviar correo con Resend:", mailErr);
       }
     }
 
     return NextResponse.json({ text: assistantReply });
-
   } catch (error) {
     console.error("API Route Error:", error);
     return NextResponse.json({ error: "Error interno" }, { status: 500 });

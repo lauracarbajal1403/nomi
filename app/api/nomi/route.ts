@@ -572,7 +572,7 @@ export async function POST(req: Request) {
           .join("\n\n");
 
         const { error } = await resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL ?? "Nominik <no-reply@gmail.com>",
+          from: process.env.RESEND_FROM_EMAIL ?? "Nominik <no-reply@resend.dev>",
           to: sendEmail.email.trim(),
           subject: isTicketRequest ? "🎟️ Nuevo Ticket de Soporte" : "📩 Resumen de Conversación",
           html: `

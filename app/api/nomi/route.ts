@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
       - Si la pregunta no está cubierta o es ambigua, responde únicamente:
 
-        "Para ayudarte con ese tema, crearé un ticket con tu solicitud y alguien del equipo de soporte te contactará."
+        "Para ayudarte con ese tema, crearé un ticket con tu solicitud y alguien del equipo de soporte te contactará. Por favor dime tu nombre y empresa."
 
       - Responde en español neutro.
 

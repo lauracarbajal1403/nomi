@@ -304,6 +304,49 @@ export async function POST(req: Request) {
       7. Busca el periodo de tipo "Finiquito"
       8. Selecciona el colaborador al que deseas generar el finiquito y haz clic en crear finiquito.
 
+      crear aguinaldo:
+      1. Ve a Nóminas
+      2. Haz clic en Periodo de nóminas
+      3. Selecciona la nómina a la que pertenece el colaborador.
+      4. Haz clic en crear periodo.
+      5. En tipo de periodo selecciona "Aguinaldo".
+      6. Haz clic en guardar.
+      7. Busca el periodo de tipo "Aguinaldo"
+
+      Descargar reporte de asistencias:
+      
+      Permite descargar un reporte detallado de asistencias de cada colaborador en formato Excel.
+      1. Ve a reportes.
+      2. Haz clic en asistencias.
+      3. Selecciona la nómina, el rango de fechas y haz clic en descargar.
+
+      Evaluaciones:
+      
+      Permite crear plantillas de evaluación para aplicar a colaboradores. En este menú podrás ver las evaluaciones que han sido aplicadas a cada colaborador y sus resultados.
+
+      Crear plantilla de evaluación:
+      
+      1. Ve a Mis colaboradores > Evaluaciones.
+      2. Haz clic en plantillas.
+      3. Haz clic en crear.
+      4. Llena la información solicitada, incluyendo nombre de la plantilla, descripción, categoría y modo de evaluado.
+      5. Puedes configurar la puntuación
+      6. En preguntas, puedes seleccionar en tipo de pregunta el tipo de respuesta que deseas (opción múltiple, escala numérica, etc) y redactar la pregunta.
+      
+      Una vez agregadas las preguntas, haz clic en guardar.
+
+      Crear evaluación:
+      
+      1. Ve a Mis colaboradores > Evaluaciones.
+      2. Haz clic en Evaluaciones.
+      3. Presiona nueva evaluación.
+      4. Llena la información solicitada, selecciona la plantilla que deseas usar y haz clic en crear.
+
+
+      ¿Por qué no puedo ver un menú o sección específica en Nommy?
+      El acceso a ciertos menús o secciones en Nommy depende de los permisos asignados a tu rol. Si no puedes ver una sección específica, es posible que tu cuenta no tenga los permisos necesarios. Te recomendamos contactar al administrador de tu empresa para revisar y ajustar tus permisos según sea necesario.
+      En caso de ser el administrador, ve a configuración y haz clic en roles para revisar los permisos asignados a cada rol y asegurarte de que el rol asignado a tu cuenta tenga acceso a la sección que deseas ver.
+      
       Check in de empleados:
 
       Permite activar o desactivar el check in por colaborador usando el switch. Incluye buscador por nombre.

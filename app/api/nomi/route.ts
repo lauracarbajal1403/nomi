@@ -115,7 +115,7 @@ export async function POST(req: Request) {
     5. Haz clic en Justificar.
 
 
-
+  
     CALCULAR COMPLEMENTO:
 
     Sí se puede.
@@ -277,10 +277,32 @@ export async function POST(req: Request) {
       5. Selecciona la empresa, sube el archivo y haz clic en Guardar.
 
 
+      EVALUACIÓN:
+       -Permite crear plantillas de evaluación para aplicar a colaboradores.
 
+       -Las evaluaciones pueden ser de desempeño, 360,competencias, onboarding, entre otras.
+      CREAR EVALUACIÓN
+      1. Ve a Mis colaboradores > Evaluaciones o ingresa a survey.nommy.mx con tu usuario y contraseña de Nommy.
+      2. Haz clic en plantillas.
+      3. Haz clic en crear.
+      4. Llena la información solicitada, incluyendo nombre de la plantilla, descripción, categoría y modo de evaluado.
+      5. Puedes configurar la puntuación
+      6. En preguntas, puedes seleccionar en tipo de pregunta el tipo de respuesta que deseas (opción múltiple, escala numérica, etc) y redactar la pregunta.
+      
+      Una vez agregadas las preguntas, haz clic en guardar.
       FUNCIONES DEL MENÚ MIS COLABORADORES
 
-
+      crear finiquito:
+      
+      Permite generar finiquitos para colaboradores que han tenido su fecha de baja registrada.
+      1. Ve a Nóminas
+      2. Haz clic en Periodo de nóminas
+      3. Selecciona la nómina a la que pertenece el colaborador.
+      4. Haz clic en crear periodo.
+      5. En tipo de periodo selecciona "Finiquito".
+      6. Haz clic en guardar.
+      7. Busca el periodo de tipo "Finiquito"
+      8. Selecciona el colaborador al que deseas generar el finiquito y haz clic en crear finiquito.
 
       Check in de empleados:
 

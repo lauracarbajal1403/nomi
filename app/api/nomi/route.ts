@@ -52,15 +52,51 @@ export async function POST(req: Request) {
 
       BASE DE CONOCIMIENTO
 
-
+      
 
       ¿QUÉ ES NOMMY?
 
       Nommy es un software de nómina y Recursos Humanos que automatiza procesos, elimina errores y mejora la experiencia de los empleados.
 
 
+      EVALUACIONES:
+      ¿Por qué sí escribí tres preguntas de ejemplo para cada tipo de evaluación, pero me salen dos?: 
+      Porque debe hacer clic en el + para agregar la pregunta a la plantilla. Solo las preguntas que han sido agregadas con el + se guardarán en la plantilla de evaluación.
+    
+      ¿Cómo crear un finiquito?
+      Para crear un finiquito:
+      1. Ve a Nóminas
+      2. Haz clic en Periodo de nóminas
+      3. Selecciona la nómina a la que pertenece el colaborador.
+      4. Haz clic en crear periodo.
+      5. En tipo de periodo selecciona "Finiquito".
+      6. Haz clic en guardar.
+      7. Busca el periodo de tipo "Finiquito"
+      8. Selecciona el colaborador al que deseas generar el finiquito y haz clic en crear finiquito.
 
-    CREAR O APLICAR ENCUESTA NOM-035:
+      ¿Cómo crear un aguinaldo?
+      Para crear un aguinaldo:
+      1. Ve a Nóminas 
+      2. Haz clic en Periodo de nóminas
+      3. Selecciona la nómina a la que pertenece el colaborador.
+      4. Haz clic en crear periodo.
+      5. En tipo de periodo selecciona "Aguinaldo".
+      6. Haz clic en guardar.
+      7. Busca el periodo de tipo "Aguinaldo"
+      8. Selecciona el colaborador al que deseas generar el aguinaldo y haz clic en crear aguinaldo.
+    
+    ¿Por qué algunos empleados no pueden ver el botón de check in en su app móvil?
+      Debe ser por los permisos del empleado. 
+      Si quieres configurar los permisos a nivel empresa ve a Empresas, selecciona la empresa, desliza hasta ver configuración de asistencias, selecciona o deselecciona las opciones según corresponda y haz clic en guardar.
+      Si quieres configurar los permisos a nivel empleado, ve a Mis colaboradores > Lista de colaboradores, selecciona el colaborador, haz clic en permisos, selecciona o deselecciona las opciones según corresponda y haz clic en guardar.
+      Si quieres configurar los permisos para todos los empleados de todas las empresas dadas de alta, ve a Configuración > Permisos, selecciona o deselecciona las opciones según corresponda y haz clic en guardar.
+    
+    ¿Cómo modifico horarios de forma masiva?
+    Hay dos formas de modificar horarios de forma masiva:
+    1. Desde Horarios > Asignar horarios, puedes asignar una plantilla de horario a varios colaboradores seleccionando el recuadro que está al lado del nombre del empleado.
+    2. Desde plantillas de horario. Podrás hacer clic en los tres puntos que corresponden a acciones y seleccionar "Asignar empleados". Ahí podrás seleccionar los colaboradores a los que deseas asignar esa plantilla de horario.
+    
+      CREAR O APLICAR ENCUESTA NOM-035:
 
     Para crear o aplicar una encuesta NOM-035:
 

@@ -52,6 +52,18 @@ export async function POST(req: Request) {
 
       BASE DE CONOCIMIENTO
 
+      ¿Cómo doy de alta en el IMSS a un nuevo colaborador?
+
+      Para dar de alta en el IMSS a un nuevo colaborador:
+      1. Ve a Empresas.
+      2. Selecciona la empresa a la que pertenece el colaborador.
+      3. Entra a la pestaña IMSS.
+      4. Llena la información solicitada en usuario IDSE
+      5. Adjunta el certificado .pfx o .cer y .key.
+      6. Haz clic en Guardar.
+      7. Ve al menú IDSE de IDSE
+      8. En movimientos, inicia la sincronización para dar de alta al colaborador en el IMSS.
+
       
 
       ¿QUÉ ES NOMMY?

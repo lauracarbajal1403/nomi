@@ -512,7 +512,13 @@ export async function POST(req: Request) {
       Asignar horarios:
 
       Permite asignar plantillas a colaboradores seleccionando fecha de inicio y fin.
+      ¿Cómo asignar horarios a varios colaboradores a la vez?
+      1. Ve a Horarios > Asignar horarios.
 
+      2. Selecciona la plantilla de horario que deseas asignar.
+      3. Marca el recuadro que está al lado de la etiqueta 'Nombre'. Esto seleccionará a todos los colaboradores listados en la página.
+      4. Haz clic en asignar horarios.
+      5. En la ventana emergente,sigue las instrucciones.
 
 
       Horarios por defecto:
@@ -677,36 +683,52 @@ export async function POST(req: Request) {
     // 2. Lógica de envío de correo detectando Ticket o Finalización
     const isTicketRequest = assistantReply.toLowerCase().includes("ticket");
 
-    if ((sendEmail?.enabled || isTicketRequest) && sendEmail?.email) {
-      try {
-        const conversationText = [...messages, { role: "assistant", content: assistantReply }]
-          .map((msg: { role: string; content: string }) =>
-            `${msg.role === "user" ? "Usuario" : "Nominik"}: ${msg.content}`
-          )
-          .join("\n\n");
+   try {
+      const conversationText = [...messages, { role: "assistant", content: assistantReply }]
+        .map((msg: { role: string; content: string }) =>
+          `${msg.role === "user" ? "Usuario" : "Nominik"}: ${msg.content}`
+        )
+        .join("\n\n");
 
-        const { error } = await resend.emails.send({
+      const htmlBody = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+          <h2 style="color: #4db8a8;">Reporte de Nominik</h2>
+          <hr />
+          <div style="white-space: pre-wrap;">${conversationText.replace(/\n/g, "<br>")}</div>
+        </div>
+      `;
+
+      // Correo 1: Siempre se envía
+      const { error: errorSiempre } = await resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL ?? "Nominik <no-reply@resend.dev>",
+        to: "laura.carbajal@nommy.mx",
+        subject: "📩 Resumen de Conversación",
+        html: htmlBody,
+      });
+
+      if (errorSiempre) {
+        console.error("❌ Resend error (resumen):", errorSiempre);
+      } else {
+        console.log("✅ Resumen enviado a laura.carbajal@nommy.mx");
+      }
+
+      // Correo 2: Solo si hay ticket
+      if (isTicketRequest) {
+        const { error: errorTicket } = await resend.emails.send({
           from: process.env.RESEND_FROM_EMAIL ?? "Nominik <no-reply@resend.dev>",
-          to: sendEmail.email.trim(),
-          subject: isTicketRequest ? "🎟️ Nuevo Ticket de Soporte" : "📩 Resumen de Conversación",
-          html: `
-            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-              <h2 style="color: #4db8a8;">Reporte de Nominik</h2>
-              <hr />
-              <div style="white-space: pre-wrap;">${conversationText.replace(/\n/g, "<br>")}</div>
-            </div>
-          `,
+          to: "laura.carbajal@nommy.mx",
+          subject: "🎟️ Nuevo Ticket de Soporte",
+          html: htmlBody,
         });
 
-        if (error) {
-          console.error("❌ Resend error:", error);
+        if (errorTicket) {
+          console.error("❌ Resend error (ticket):", errorTicket);
         } else {
-          console.log("✅ Correo enviado exitosamente a:", sendEmail.email);
+          console.log("✅ Ticket enviado a laura.carbajal@nommy.mx");
         }
-      } catch (mailErr) {
-        // Logueamos el error pero no bloqueamos la respuesta al usuario
-        console.error("❌ Error crítico al enviar correo con Resend:", mailErr);
       }
+    } catch (mailErr) {
+      console.error("❌ Error crítico al enviar correo con Resend:", mailErr);
     }
 
     return NextResponse.json({ text: assistantReply });

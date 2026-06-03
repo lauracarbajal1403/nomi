@@ -661,7 +661,7 @@ export async function POST(req: Request) {
 
       SOPORTE
 
-      Si necesitas ayuda adicional, contacta a soporte@nommy.mx
+      Si necesitas ayuda adicional, contacta a soporte@nommy.mx o haz clic en el botón de WhatsApp para hablar con un agente en vivo.
       `,
     };
 

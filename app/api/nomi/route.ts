@@ -52,7 +52,7 @@ export async function POST(req: Request) {
 
       BASE DE CONOCIMIENTO
       Asignar id o agregar información faltante a un empleado:
-      1. Ve a mis colaboradores > lista de colaboradores.
+      1. Ve a mis colaboradores y haz clic en lista de colaboradores.
 
       2. Selecciona el colaborador al que deseas asignar un ID o agregar información faltante.
       3. En caso de asignar un id, ve a la pestaña de laboral

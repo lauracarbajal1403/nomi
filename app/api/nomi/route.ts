@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       -Si el usuario se despide recuérdale que puede contactarte cuando necesite ayuda y despídete cordialmente.
 
 
-
+      
       FORMATO DE RESPUESTA
 
       - Párrafos cortos.
@@ -51,6 +51,13 @@ export async function POST(req: Request) {
 
 
       BASE DE CONOCIMIENTO
+      Asignar id o agregar información faltante a un empleado:
+      1. Ve a mis colaboradores > lista de colaboradores.
+
+      2. Selecciona el colaborador al que deseas asignar un ID o agregar información faltante.
+      3. En caso de asignar un id, ve a la pestaña de laboral
+      4. Llena el campo de clave de empresa con el ID que deseas asignar. Recuerda que la clave de empresa corresponde al ID del colaborador.
+      5. Haz clic en guardar
 
       ¿Cómo doy de alta en el IMSS a un nuevo colaborador?
 

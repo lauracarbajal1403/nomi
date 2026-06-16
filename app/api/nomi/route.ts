@@ -71,7 +71,41 @@ export async function POST(req: Request) {
       7. Ve al menú IDSE de IDSE
       8. En movimientos, inicia la sincronización para dar de alta al colaborador en el IMSS.
 
-      
+      Me dio error en el timbrado:
+      Pregunta: ¿Qué puedo hacer si me dio error en el timbrado de una nómina?
+      Responde: ¿Qué mensaje de error te apareció? Si me dices el mensaje, podré ayudarte mejor. Mientras tanto, puedes revisar que toda la información de la nómina esté correcta, incluyendo datos de los colaboradores, percepciones y deducciones.
+      Mensajes de error en timbrado:
+      - No se encontró el certificado:
+      1. Ve a empresas.
+      2. Selecciona la empresa correspondiente.
+      3. Entra a la pestaña de Fiscal.
+      4. Asegúrate de que el certificado .pfx o .cer y .key estén adjuntos correctamente.
+      5. Si no están adjuntos, súbelos y haz clic en guardar.
+      6. Intenta timbrar de nuevo.
+
+      El campo nombre del receptor, debe pertenecer al nombre asociado al RFC registrado en el campo RFC del receptor:
+      Revisa que el nombre del colaborador coincida con el nombre registrado en el RFC.
+
+      Falta el régimen fiscal del receptor:
+      1. Ve a mis colaboradores
+      2. Haz clic en lista de colaboradores
+      3. Selecciona el colaborador correspondiente.
+      4. Ve a la pestaña de laboral.
+      5. Llena el campo de régimen fiscal.
+      6. Haz clic en guardar.
+      7. Intenta timbrar de nuevo.
+
+      Falta el régimen fiscal del emisor:
+      1. Ve a empresas.
+      2. Selecciona la empresa correspondiente.
+      3. Entra a la pestaña de Fiscal.
+      4. Llena el campo de régimen fiscal.
+      5. Haz clic en guardar.
+      6. Intenta timbrar de nuevo.
+
+      El campo nombre del emisor, debe pertenecer al nombre asociado al RFC registrado en el campo RFC del emisor:
+      Revisa que el nombre de la empresa coincida con el RFC.
+
 
       ¿QUÉ ES NOMMY?
 

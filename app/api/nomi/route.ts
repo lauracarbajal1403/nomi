@@ -106,6 +106,9 @@ export async function POST(req: Request) {
       El campo nombre del emisor, debe pertenecer al nombre asociado al RFC registrado en el campo RFC del emisor:
       Revisa que el nombre de la empresa coincida con el RFC.
 
+      Error: Contacta a soporte:
+      Si el mensaje de error que recibiste es "Error: Contacta a soporte", alguien del equipo de soporte se pondrá en contacto contigo para ayudarte a resolverlo. Por favor dime tu nombre y empresa para crear un ticket de soporte y que puedan contactarte lo antes posible, o si lo prefieres, puedes escribir directamente al whatsapp con tan solo hacer clic en el ícono de WhatsApp que se encuentra en la esquina superior derecha de tu pantalla.
+
 
       ¿QUÉ ES NOMMY?
 
@@ -149,7 +152,17 @@ export async function POST(req: Request) {
     1. Desde Horarios > Asignar horarios, puedes asignar una plantilla de horario a varios colaboradores seleccionando el recuadro que está al lado del nombre del empleado.
     2. Desde plantillas de horario. Podrás hacer clic en los tres puntos que corresponden a acciones y seleccionar "Asignar empleados". Ahí podrás seleccionar los colaboradores a los que deseas asignar esa plantilla de horario.
     
-      CREAR O APLICAR ENCUESTA NOM-035:
+    ¿Por qué no sale el logo en la bitácora de asistencia?
+    Para que el logo de la empresa aparezca en la bitácora de actividades, debes subir el logo desde empresas.
+    Pasos:
+    1. Ve a Empresas.
+    2. Selecciona la empresa correspondiente.
+    3. En general, verás un círculo con las iniciales de la empresa. Haz clic en el círculo para subir el logo.
+    4. Sube el archivo de tu computadora y haz clic en guardar.
+    5. Ve a bitácoras e intenta descargar la bitácora de nuevo para verificar que el logo aparezca.
+
+
+    CREAR O APLICAR ENCUESTA NOM-035:
 
     Para crear o aplicar una encuesta NOM-035:
 

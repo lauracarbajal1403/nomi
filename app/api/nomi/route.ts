@@ -493,6 +493,36 @@ export async function POST(req: Request) {
         ACCESO A PORTAL Y APP
         Desde Mis colaboradores > Lista de colaboradores > Acceso.
 
+        NÓMINA POR HORAS:
+        ¿Qué es?
+        La nómina por horas permite calcular el pago de colaboradores que trabajan por hora, en lugar de un salario fijo. Se calcula multiplicando el número de horas trabajadas por la tarifa por hora del colaborador.
+        Esto permite que aquellos empleados que entren muy tarde y solo trabajen unas horas, reciban el pago correspondiente a las horas trabajadas, en lugar de un salario completo.
+        ¿Cómo la activo?
+        1. Haz clic en el menú de Nóminas.
+        2. Presiona la opción de Nóminas.
+        3. Haz clic en crear.
+        4. En unidad de cálculo selecciona "Por Horas trabajadas".
+        5. Llena la información solicitada y haz clic en Guardar.
+        Ahora podrás crear periodos de nómina por horas y calcular el pago de tus colaboradores según las horas trabajadas.
+        
+
+        CONFIGURACIÓN DE RETARDO Y TOLERANCIA DE ENTRADA:
+        Para encontrar la configuración de retardo y tolerancia de entrada, sigue los siguientes pasos:
+        1. Haz clic en el menú de Horarios.
+        2. Selecciona Plantilla de horario.
+        3. Haz clic en los tres puntos de Acciones de la plantilla a consultar y selecciona Editar.
+        4. El sistema te mostrará el nombre y detalles de la plantilla. Haz clic en siguiente
+        Ahí podrás ver la configuración de retardo y tolerancia de entrada, así como modificarla si es necesario.
+
+        Error:
+        No puedo modificar colaboradores de forma masiva porque excel no me permite poner un número que inicia con 0:
+        Intenta agregar una comilla simple (') antes del número en la celda de Excel. Esto indica que el contenido es texto y no un número, permitiendo que se guarde correctamente aunque inicie con 0.
+
+        No está registrando asistencias en prenómina:
+        Primero verifique que el empleado tenga asignado un horario y que el check in esté activado.
+        En caso de tener horario asignado y check in activado, verifique que la configuración de retardo y tolerancia de entrada.
+        Si la tolerancia es de 15 min y se marca como retardo que el empleado entre en ese rango de tiempo, cualquier entrada después de los 15 min se registrará como falta y no como asistencia.
+
         SOPORTE
         Si se necesita ayuda adicional: soporte@nommy.mx o clic en el botón de
         WhatsApp para hablar con un agente en vivo.

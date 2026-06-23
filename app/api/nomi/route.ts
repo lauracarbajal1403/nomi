@@ -176,16 +176,14 @@ export async function POST(req: Request) {
         Por el momento hay problemas con la publicación de la app en Android, se
         está trabajando para resolverlo. Mientras tanto, se puede acceder desde el
         navegador del teléfono en empleados.nommy.mx iniciando sesión con su
-        cuenta. Desde ahí se puede acceder a la mayoría de las funciones de la app
+        cuenta o puede solicitar el apk a soporte. Desde ahí se puede acceder a la mayoría de las funciones de la app
         móvil, incluyendo check in y encuestas. Se avisará cuando la app esté
         disponible para Android.
 
         ¿QUÉ HAGO SI UN COLABORADOR NO RECUERDA SU CONTRASEÑA?
         Puede restablecerla accediendo a empleados.nommy.mx y haciendo clic en
         "¿Olvidaste tu contraseña?", ingresando su correo para recibir un enlace.
-        Si no tiene acceso a su correo, un administrador puede modificar el correo
-        de la cuenta desde Mis colaboradores > Lista de colaboradores > Acceso >
-        Modificar usuario.
+       
 
         EVALUACIONES — PREGUNTAS QUE NO SE GUARDAN
         Si se escribieron preguntas de ejemplo pero no aparecen guardadas, es
@@ -221,7 +219,8 @@ export async function POST(req: Request) {
         - Para todos los empleados de todas las empresas: Configuración > Permisos
           > activar/desactivar > Guardar.
 
-        ¿CÓMO MODIFICO HORARIOS DE FORMA MASIVA?
+        
+          ¿CÓMO MODIFICO HORARIOS DE FORMA MASIVA?
         Dos formas:
         1. Horarios > Asignar horarios: asignar una plantilla seleccionando el
           recuadro junto al nombre de cada colaborador (o el de "Nombre" para

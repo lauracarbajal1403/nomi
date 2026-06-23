@@ -172,7 +172,7 @@ export async function POST(req: Request) {
           horarios, selecciona la plantilla recién modificada y asígnala al
           colaborador.
 
-        ¿CÓMO DESCARGO LA APP EN ANDROID?
+        ¿CÓMO DESCARGO LA APP EN ANDROID? / NO ME SALE LA APP EN GOOGLE PLAY PLAY STORE
         Por el momento hay problemas con la publicación de la app en Android, se
         está trabajando para resolverlo. Mientras tanto, se puede acceder desde el
         navegador del teléfono en empleados.nommy.mx iniciando sesión con su

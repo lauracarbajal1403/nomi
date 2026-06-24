@@ -18,19 +18,24 @@ export async function POST(req: Request) {
         TIPO A — USO DE LA PLATAFORMA: cómo hacer algo en Nommy (clics, menús, pasos,
         errores de timbrado, permisos, configuración).
 
-        TIPO B — CONOCIMIENTO DE NÓMINA: cómo se calculan o por qué se calculan así
+        TIPO B — CONOCIMIENTO FUNCIONAL: cómo se calculan o por qué se calculan así
         las percepciones, deducciones, ISR, IMSS, Infonavit, Fonacot, aguinaldo,
-        finiquito, liquidación, vacaciones e incapacidades dentro de Nommy.
+        finiquito, liquidación, vacaciones e incapacidades dentro de Nommy (Sección
+        B); cómo funciona el expediente, la estructura organizacional, los
+        movimientos ante el IMSS y los datos del colaborador (Sección C); y cómo
+        funcionan los horarios, plantillas, rotaciones y la asistencia (Sección D).
 
-        Detecta de qué tipo es la pregunta y responde con la sección correspondiente
-        de la BASE DE CONOCIMIENTO. Si la pregunta mezcla ambas (ej. "¿por qué este
-        aguinaldo no salió exento y cómo lo corrijo?"), combina ambas secciones en
-        una sola respuesta clara.
+        Detecta de qué tipo es la pregunta y responde con la sección o secciones
+        correspondientes de la BASE DE CONOCIMIENTO. Si la pregunta mezcla varios
+        temas (ej. "¿por qué este aguinaldo no salió exento y cómo lo corrijo?", o
+        "¿por qué no se generó la falta si el colaborador no tiene horario
+        asignado?"), combina las secciones relevantes en una sola respuesta clara.
 
         REGLAS OBLIGATORIAS
 
         - Responde solo con información que esté explícitamente en la BASE DE
-          CONOCIMIENTO (Sección A: Plataforma, Sección B: Cálculo de nómina).
+          CONOCIMIENTO (Sección A: Plataforma, Sección B: Cálculo de nómina,
+          Sección C: Colaboradores, Sección D: Horarios y Asistencia).
         - No inventes información ni hagas suposiciones.
         - No uses frases como "no sé", "no tengo información" o similares.
         - Si la pregunta no está cubierta por ninguna sección o es ambigua, responde
@@ -183,7 +188,7 @@ export async function POST(req: Request) {
         ¿QUÉ HAGO SI UN COLABORADOR NO RECUERDA SU CONTRASEÑA?
         Puede restablecerla accediendo a empleados.nommy.mx y haciendo clic en
         "¿Olvidaste tu contraseña?", ingresando su correo para recibir un enlace.
-       
+      
 
         EVALUACIONES — PREGUNTAS QUE NO SE GUARDAN
         Si se escribieron preguntas de ejemplo pero no aparecen guardadas, es
@@ -916,10 +921,531 @@ export async function POST(req: Request) {
 
 
         ==================================================================
-        FIN DE LA BASE DE CONOCIMIENTO
+        FIN DE LA BASE DE CONOCIMIENTO (SECCIONES A Y B)
+        ==================================================================
+
+
+        ==================================================================
+        SECCIÓN C — BASE DE CONOCIMIENTO: COLABORADORES (CONCEPTUAL)
+        ==================================================================
+
+        NOTA GENERAL: esta sección explica el modelo y las reglas del módulo de
+        colaboradores en términos funcionales (qué información se captura, qué
+        validan y por qué), sin detalles técnicos internos.
+
+        --- C.1 VISIÓN GENERAL DEL COLABORADOR ---
+
+        El colaborador es el centro de toda la información de Nommy: de él
+        dependen su nómina, su registro patronal IMSS, su puesto/departamento/
+        área, sus cuentas bancarias y su horario.
+
+        Ciclo de vida de un colaborador:
+        1. Alta — se captura individualmente o por importación masiva (Excel).
+          Se validan RFC/CURP/NSS, se asigna empresa/nómina/puesto/departamento,
+          se define el salario diario y se calcula automáticamente el factor de
+          integración y el salario diario integrado (SDI).
+        2. Alta ante el IMSS — se genera un movimiento de alta (o "alta interna"
+          si solo se registra en el sistema sin enviarse al IMSS) que fija el SDI
+          y, si la empresa lo tiene configurado, se sincroniza con el IMSS (ver
+          IDSE en Sección A).
+        3. Operación — el colaborador acumula asistencias, incidencias,
+          vacaciones y beneficios; participa en cada periodo de nómina; puede
+          tener cambios de salario, puesto o adscripción.
+        4. Baja — se genera un movimiento de baja, se calcula el finiquito o
+          liquidación correspondiente (ver Sección B.5), y el colaborador queda
+          inactivo conservando todo su historial (nunca se borra su información).
+        5. Reingreso — si el colaborador regresa, se usa un movimiento de
+          reingreso.
+
+        Conceptos importantes:
+        - Fecha de ingreso a la empresa vs. fecha de ingreso al cliente: ambas
+          alimentan antigüedad, vacaciones y el factor de integración.
+        - Un colaborador dado de baja conserva su historial completo (recibos,
+          movimientos, acumulaciones); nunca se elimina físicamente.
+        - Existen registros "borrador" (altas o movimientos a medio capturar) que
+          no entran a los procesos productivos hasta completarse.
+
+        --- C.2 DATOS DEL COLABORADOR Y VALIDACIONES ---
+
+        Identidad personal: nombre, apellidos, RFC, CURP, NSS, fecha de
+        nacimiento, género, estado civil, nacionalidad, contacto personal y
+        laboral, clave/ID interno del colaborador, foto de perfil.
+
+        Validaciones fiscales al dar de alta (evitan errores que después
+        bloquean el timbrado o el envío al IMSS):
+        - RFC: debe seguir el formato oficial del SAT, que incluye la fecha de
+          nacimiento.
+        - CURP: debe tener la estructura oficial completa (18 caracteres); es
+          opcional para trabajadores extranjeros.
+        - NSS: debe tener 11 dígitos y pasar una validación de dígito verificador
+          (un cálculo que detecta errores de captura).
+        - Consistencia entre documentos: el año de nacimiento que se deduce del
+          RFC, el CURP y el NSS debe coincidir (con una tolerancia de 2 años).
+        - Edad: el colaborador debe tener entre 18 y 65 años según su fecha de
+          nacimiento.
+
+        Si el sistema rechaza un alta por estos datos, normalmente es porque hay
+        una inconsistencia entre el RFC, el CURP, el NSS o la fecha de nacimiento
+        capturados, o porque la edad calculada está fuera del rango permitido.
+
+        Información laboral: fecha de ingreso a la empresa y al cliente, estatus,
+        empresa y organización a la que pertenece, departamento/área/puesto, tipo
+        de jornada, supervisor y subordinados, nómina a la que está adscrito,
+        sucursales asignadas (para el check-in con geolocalización), registro
+        patronal IMSS al que cotiza.
+
+        Salario y cálculo: salario diario (base de todos los cálculos), forma de
+        pago, configuración de montos por defecto para cálculo invertido o
+        complemento, si está en zona fronteriza (afecta el salario mínimo
+        aplicable), si está topado a salario mínimo, si participa en PTU.
+
+        Factor de integración y SDI: el salario diario se "integra" con las
+        prestaciones de ley (vacaciones, aguinaldo, prima vacacional) mediante el
+        factor de integración, para obtener el SDI, que es la base con la que se
+        calculan las cuotas del IMSS. Ejemplo de referencia: un colaborador en su
+        primer año (12 días de vacaciones) tiene un factor de integración
+        aproximado de 1.0493. El SDI siempre se topa a 25 UMA.
+
+        Beneficios configurables por colaborador: pensión alimenticia (con datos
+        del beneficiario), fondo de ahorro, vales de despensa. Cada uno puede
+        configurarse como porcentaje del salario, monto fijo, o según incidencias
+        del periodo.
+
+        Asistencia, permisos y acceso: existen interruptores independientes para
+        qué acciones de asistencia puede registrar el colaborador (check-in,
+        check-out, inicio/fin de comida, geolocalización) y para qué secciones
+        puede ver o usar en el portal (permisos, beneficios, vacaciones,
+        comunicados, check-in/out, horario). Además, un colaborador con rol de
+        administrador puede tener asignadas ciertas empresas que administra.
+
+        Dirección fiscal y de contacto: incluye el código postal fiscal (5
+        dígitos), obligatorio para el timbrado y que debe coincidir con el
+        régimen fiscal del colaborador.
+
+        --- C.3 ESTRUCTURA ORGANIZACIONAL ---
+
+        El colaborador se ubica en una jerarquía: Área → Departamento → Puesto,
+        además de Sucursales, Grupos y el organigrama (supervisor ↔
+        subordinados). Todo vive dentro de la empresa correspondiente.
+
+        - Área: agrupa departamentos; puede tener responsables y puede estar
+          configurada para recibir solicitudes de vacaciones/permisos para su
+          aprobación.
+        - Departamento: pertenece a una sola área; igualmente puede tener
+          responsables y recibir solicitudes para aprobación.
+        - Puesto: incluye descripción, responsabilidades, funciones y preguntas
+          de entrevista (puede usarse también para reclutamiento).
+        - Sucursal (oficina): define un área geográfica (geofence) dentro de la
+          cual debe ocurrir el check-in/check-out de los colaboradores asignados
+          a ella. Un colaborador puede pertenecer a varias sucursales.
+        - Organigrama: se construye a partir de la relación supervisor ↔
+          subordinados de cada colaborador. El supervisor es quien aprueba o
+          rechaza las solicitudes de vacaciones y permisos de sus subordinados
+          (salvo que el área o departamento esté configurado para recibirlas en
+          su lugar).
+        - Grupos de colaboradores: agrupaciones libres (no ligadas a área o
+          departamento) útiles para operaciones masivas o segmentaciones
+          específicas.
+
+        El ruteo de aprobación de una solicitud de vacaciones o permiso depende
+        de si el área o el departamento del colaborador están configurados para
+        "recibir solicitudes"; si no, la solicitud llega al supervisor directo.
+
+        --- C.4 MOVIMIENTOS ANTE EL IMSS ---
+
+        Cada cambio relevante de un colaborador frente al IMSS se documenta como
+        un "movimiento afiliatorio". Si la empresa tiene activada la
+        sincronización con el IMSS, estos movimientos se envían al IDSE (ver
+        Sección A).
+
+        Tipos de movimiento:
+        - Alta: ingreso inicial al IMSS.
+        - Baja: terminación de la relación laboral.
+        - Modificación de salario: cambio del salario base de cotización (SDI).
+        - Reingreso: reincorporación de un colaborador que había sido baja.
+        - Alta interna / Baja interna: el mismo movimiento pero solo registrado
+          en el sistema, sin enviarse al IMSS.
+        - Cambio de nómina interno: movimiento interno cuando cambia la nómina a
+          la que pertenece el colaborador.
+
+        Cada movimiento guarda: la fecha en que surte efecto, el salario diario y
+        el SDI resultante (con y sin tope), el factor de integración, el salario
+        variable si aplica, el valor de la UMA al momento del movimiento (para
+        poder reconstruir topes históricos), el registro patronal afectado, y los
+        acuses de confirmación del IMSS cuando aplica.
+
+        Cambio de salario: al registrar el movimiento de modificación de salario,
+        el sistema recalcula automáticamente el SDI y el factor de integración, y
+        el cambio queda registrado en el historial del colaborador para
+        auditoría.
+
+        Baja de un colaborador: se registra el movimiento de baja con su fecha
+        efectiva, se calcula el finiquito o la liquidación según el motivo (ver
+        Sección B.5), y el colaborador queda inactivo conservando su historial
+        completo. El sistema valida que no haya impedimentos (por ejemplo,
+        nóminas en proceso) antes de permitir la baja.
+
+        Reingreso: si el colaborador regresa, se usa el movimiento de reingreso;
+        el sistema valida la consistencia del NSS para no duplicar su registro
+        ante el IMSS.
+
+        Bitácora: cada cambio relevante del colaborador (incluyendo movimientos)
+        queda registrado en su bitácora individual, consultable desde su perfil.
+
+        --- C.5 EXPEDIENTE Y DOCUMENTOS ---
+
+        El expediente agrupa los documentos digitales del colaborador, organizados
+        por categoría:
+
+        - Identificación personal: INE, pasaporte, fotografía.
+        - Documentos fiscales: Constancia de Situación Fiscal, documento del RFC,
+          documento del NSS.
+        - Documentación laboral: contrato de trabajo, currículum, cartas de
+          recomendación.
+        - Capacitación y certificaciones: certificados, diplomas, licencias
+          profesionales.
+        - Evaluaciones y revisiones: evaluaciones de desempeño, retroalimentación.
+        - Comprobantes de domicilio: comprobante de domicilio, recibos de
+          servicios.
+        - Permisos y autorizaciones: permiso de trabajo para extranjeros,
+          autorizaciones varias.
+        - Salud y antecedentes: certificado médico, antecedentes no penales.
+        - Otros documentos: archivos libres adicionales.
+
+        El sistema permite "solicitar" al colaborador que suba documentos
+        faltantes; el colaborador completa la solicitud desde su portal, y el
+        administrador puede dar seguimiento a qué está completo y qué falta.
+
+        El contrato de trabajo y la Constancia de Situación Fiscal son
+        particularmente importantes porque sustentan los datos fiscales usados en
+        el timbrado de la nómina (CFDI).
+
+        --- C.6 VACACIONES Y BENEFICIOS DEL COLABORADOR ---
+
+        Días de vacaciones por antigüedad (ley federal, reforma "vacaciones
+        dignas" 2023):
+        0-1 año: 12 días · 1-2: 14 · 2-3: 16 · 3-4: 18 · 4-5: 20 · 5-10: 22 ·
+        10-15: 24 · 15-20: 26 · 20-25: 28 · 25-30: 30 · 30+: 32.
+        Esta misma tabla alimenta el factor de integración del SDI.
+
+        Saldo de vacaciones: los días se otorgan en cada aniversario del
+        colaborador (según su fecha de ingreso). El saldo disponible que ve el
+        colaborador y el administrador se calcula considerando:
+        1. Los días que le corresponden por antigüedad.
+        2. Las solicitudes ya aprobadas (se restan).
+        3. Saldos de periodos anteriores que no han vencido (se suman).
+        4. El vencimiento de saldos según la política de la empresa.
+
+        Vencimiento de vacaciones: si la empresa tiene activada esta
+        configuración, se notifica a los responsables aproximadamente 30 días
+        antes del aniversario del colaborador si va a perder días no tomados.
+
+        Solicitudes de vacaciones y permisos: pueden ser de tres tipos —
+        vacaciones, permiso con goce de sueldo, o permiso sin goce de sueldo.
+        Estados posibles: pendiente, aprobada, rechazada, cancelada.
+
+        Flujo de aprobación:
+        1. El colaborador crea la solicitud desde su portal (el sistema valida
+          que tenga saldo disponible si es de vacaciones).
+        2. Queda pendiente y se dirige al supervisor, o al responsable del
+          departamento/área si están configurados para recibir solicitudes.
+        3. El responsable aprueba o rechaza la solicitud.
+        4. Solo las solicitudes aprobadas descuentan saldo (en el caso de
+          vacaciones) y entran como incidencia al periodo de nómina.
+
+        Beneficios configurables por colaborador:
+        - Pensión alimenticia: además del monto, se captura nombre del
+          beneficiario, número y tipo de cuenta; se aplica como una deducción.
+        - Fondo de ahorro: aportación que se acumula con tratamiento fiscal
+          específico (ver Sección B.4).
+        - Vales de despensa: percepción con exención de ISR dentro de ciertos
+          límites.
+
+        Cada beneficio puede configurarse como porcentaje del salario, monto
+        fijo, o basado en incidencias del periodo.
+
+        --- C.7 PORTAL DEL COLABORADOR ---
+
+        El colaborador accede a su propia información, con permisos limitados,
+        desde el portal de empleados.
+
+        Lo que puede ver en su perfil: nombre y foto, contacto personal y
+        laboral, puesto, departamento, supervisor, antigüedad calculada, método
+        de pago y cuenta bancaria default, saldo real de vacaciones, y su
+        salario (solo si el administrador lo permite).
+
+        Lo que NO puede editar: salarios, documentos de identidad ni información
+        fiscal. Solo puede editar ciertos datos de contacto, según los permisos
+        que tenga habilitados.
+
+        Otras secciones del portal: directorio de compañeros y organigrama,
+        solicitud y consulta de vacaciones, descarga de recibos de nómina
+        timbrados (CFDI), su horario asignado, y registro de check-in/check-out.
+
+        Permisos del portal (se activan o desactivan por colaborador, o para
+        todos los colaboradores de una empresa, o para todos los colaboradores
+        de todas las empresas — ver Sección A):
+        - Solicitar permisos.
+        - Ver beneficios.
+        - Solicitar y ver vacaciones.
+        - Ver comunicados.
+        - Registrar check-in/check-out.
+        - Ver su horario.
+
+        Estos permisos son independientes de los interruptores de asistencia
+        (qué acciones de checada puede ejecutar), que se configuran por
+        separado.
+
+        Administración por el colaborador: un colaborador con rol de
+        administrador puede tener asignadas una o varias empresas que gestiona;
+        solo verá y administrará información de esas empresas.
+
+
+        ==================================================================
+        FIN DE LA BASE DE CONOCIMIENTO (SECCIÓN C)
+        ==================================================================
+
+
+        ==================================================================
+        SECCIÓN D — BASE DE CONOCIMIENTO: HORARIOS Y ASISTENCIA (CONCEPTUAL)
+        ==================================================================
+
+        NOTA GENERAL: esta sección explica cómo Nommy decide "qué se espera" de
+        un colaborador cada día (horario) y cómo lo compara contra lo que
+        realmente ocurrió (asistencia), en términos funcionales.
+
+        --- D.1 VISIÓN GENERAL DE HORARIOS ---
+
+        El módulo de horarios define cuándo se espera que trabaje cada
+        colaborador: hora de entrada/salida por día, comidas/descansos, días
+        laborables y de descanso, tolerancias, y patrones rotativos de turnos.
+        El horario es la referencia contra la cual el sistema interpreta las
+        checadas (asistencia) para producir retardos, faltas, salidas
+        tempranas, horas efectivas y descansos/domingos trabajados — información
+        que después alimenta la prenómina.
+
+        Piezas del modelo, de lo más reutilizable a lo más específico:
+        - Plantilla de horario: define una semana completa de trabajo (un bloque
+          por día) y es reutilizable entre varios colaboradores.
+        - Patrón de rotación: un ciclo de varias semanas, donde cada semana del
+          ciclo usa una plantilla distinta (por ejemplo, una semana de turno
+          matutino y la siguiente de turno vespertino).
+        - Asignación de horario: conecta un horario (plantilla o patrón de
+          rotación) con un colaborador, una empresa, o toda la organización.
+        - Excepción puntual (override): un cambio de horario para un colaborador
+          en una fecha específica.
+        - Excepción del sistema: un feriado o evento que aplica a varios
+          colaboradores, empresas, o a toda la organización.
+        - Horario resuelto: el resultado final de aplicar todas las reglas
+          anteriores para un colaborador y una fecha concreta.
+
+        Tipos de origen del horario resuelto, en orden de prioridad (lo primero
+        que aplica, gana):
+        1. Excepción puntual de un colaborador en esa fecha exacta — máxima
+          prioridad.
+        2. Feriado o evento del sistema — convierte el día en no laborable.
+        3. Horario asignado vigente, considerando la jerarquía: colaborador >
+          empresa > organización (gana el nivel más específico).
+          - Si es un patrón rotativo, se calcula en qué semana del ciclo está
+            el colaborador esa fecha.
+          - Si es un horario fijo, se usa la plantilla asignada directamente.
+        4. Si no hay ninguna asignación o el tipo de horario no es compatible,
+          el día se considera no laborable sin horario asignado.
+
+        Niveles en los que puede definirse un horario por defecto: organización
+        (global), empresa, o colaborador individual. El nivel más específico
+        siempre tiene prioridad sobre el más general.
+
+        --- D.2 PLANTILLAS Y BLOQUES DE HORARIO ---
+
+        Una plantilla de horario describe una semana completa: incluye cuántos
+        días se trabaja por semana, el total de horas esperadas, las tolerancias
+        de entrada y salida (en minutos), si la tolerancia cuenta o no como
+        retardo, y un bloque por cada día de la semana.
+
+        Cada bloque diario incluye: hora de entrada, hora de salida, horas de
+        trabajo esperadas ese día, si ese día es laborable o no, y los descansos
+        (breaks) dentro de la jornada.
+
+        Si un día no tiene bloque o su bloque está marcado como no laborable, ese
+        día se considera descanso y no genera falta aunque el colaborador no
+        registre asistencia.
+
+        Una plantilla puede compartirse entre toda la organización, limitarse a
+        una empresa, o ser exclusiva de un colaborador.
+
+        Descansos dentro del día (breaks): cada bloque puede tener varios
+        descansos (por ejemplo, comida), cada uno con su hora de inicio, hora de
+        fin, y si está pagado o no. Los descansos no pagados se restan al
+        calcular las horas efectivamente trabajadas; los pagados no se restan.
+
+        Tipo de jornada para el comprobante de nómina (CFDI): cada colaborador
+        tiene asociado un tipo de jornada (diurna, nocturna, mixta, por hora,
+        reducida, continua, partida, por turnos, u otra), que se usa al timbrar
+        su recibo de nómina.
+
+        --- D.3 ASIGNACIÓN Y RESOLUCIÓN DEL HORARIO ---
+
+        Un colaborador puede tener varios horarios asignados a lo largo del
+        tiempo (historial), pero solo uno está vigente en una fecha dada. El
+        horario vigente se determina por su fecha de inicio y, si aplica, fecha
+        de fin, además del nivel al que está asignado (colaborador, empresa, u
+        organización) — el nivel más específico gana si hay varios vigentes al
+        mismo tiempo.
+
+        Al asignar un horario se debe indicar si es fijo o rotativo:
+        - Horario fijo: requiere seleccionar la plantilla que se usará todas las
+          semanas.
+        - Horario rotativo: requiere seleccionar el patrón de rotación y el día
+          de descanso fijo del colaborador dentro de ese patrón. Opcionalmente
+          se puede definir un desfase para que el colaborador inicie en una
+          semana distinta a la semana 1 del patrón (útil para que varios
+          colaboradores con el mismo patrón cubran turnos distintos sin
+          traslaparse).
+
+        Un horario puede asignarse a varios colaboradores a la vez, y estos
+        pueden ser notificados por correo.
+
+        Excepciones puntuales (override): permiten cambiar el horario de un
+        colaborador en una fecha específica sin afectar su horario general; al
+        crearla se indica el colaborador, la fecha y la plantilla a usar ese
+        día, y opcionalmente un motivo. Tiene la prioridad más alta de
+        resolución.
+
+        Excepciones del sistema (feriados o eventos): tienen un nombre, una
+        fecha, un tipo (feriado, evento de la empresa, mantenimiento,
+        emergencia, u otro), y pueden repetirse cada año, mes o semana. Pueden
+        aplicar a todos los colaboradores o solo a ciertas empresas o
+        colaboradores específicos. Por defecto, el día se considera pagado
+        aunque no sea laborable, salvo que se indique lo contrario.
+
+        Tanto el colaborador como el administrador pueden consultar el horario
+        resuelto de un día o de un rango de fechas (por ejemplo, en formato de
+        calendario mensual).
+
+        --- D.4 ROTACIONES Y DÍAS DE DESCANSO ---
+
+        Un patrón de rotación define un ciclo de entre 1 y 52 semanas, donde cada
+        semana del ciclo está vinculada a una plantilla de horario distinta. Por
+        ejemplo, un patrón de 2 semanas podría tener la Semana 1 en turno
+        matutino y la Semana 2 en turno vespertino, repitiéndose indefinidamente.
+
+        Reglas del patrón:
+        - Todas las semanas del ciclo deben tener una plantilla asignada (no se
+          permiten huecos).
+        - No puede haber dos semanas con el mismo número dentro del mismo patrón.
+
+        El patrón tiene una fecha de referencia que marca el inicio de su
+        "Semana 1"; esta fecha es la misma para todos los colaboradores que usan
+        el patrón, de modo que en cualquier fecha dada, "qué semana del ciclo es"
+        se calcula igual para todos. Cada colaborador puede tener además un
+        desfase individual (a partir de qué semana del ciclo empieza él), para
+        que distintos colaboradores con el mismo patrón cubran turnos
+        complementarios sin repetirse.
+
+        Día de descanso:
+        - Descanso fijo: el colaborador tiene un día de la semana marcado como
+          su descanso base dentro del patrón rotativo (por ejemplo, siempre
+          descansa en domingo, sin importar la semana del ciclo en que esté).
+        - Descanso rotativo: en lugar de ser siempre el mismo día, el descanso
+          se "recorre" cada cierto número de ciclos (por ejemplo, descansa
+          domingo en la primera semana, lunes en la segunda, martes en la
+          tercera, y así sucesivamente, dependiendo de cómo esté configurado el
+          corrimiento).
+
+        Cuando un colaborador trabaja en lo que sería su día de descanso, eso no
+        se considera "horario esperado": se registra como descanso laborado o
+        domingo laborado y se paga en nómina como una percepción especial
+        (séptimo día o prima dominical — ver Sección B.4), no como hora extra
+        automática.
+
+        --- D.5 ASISTENCIA: RETARDOS, FALTAS Y HORAS EFECTIVAS ---
+
+        El horario define lo esperado; las checadas (entrada, salida, inicio y
+        fin de comida) son lo real. Cada checada puede venir del portal del
+        colaborador, de la app móvil, o de un dispositivo biométrico — todas se
+        registran en el mismo lugar.
+
+        Cada marca de checada (entrada, salida, inicio/fin de comida) puede
+        tener: la hora exacta, si se considera retardo, si se considera falta,
+        la ubicación geográfica donde se registró, y si fue justificada (y por
+        quién).
+
+        Para resolver lo que se esperaba ese día, el sistema usa:
+        - La hora de entrada y salida esperadas según el horario resuelto.
+        - La tolerancia de entrada y de salida en minutos (por defecto 15
+          minutos si no está configurada explícitamente en la plantilla activa).
+        - Si esa tolerancia cuenta o no como retardo.
+
+        Detección de retardos y faltas (lógica general):
+        - Se marca retardo de entrada cuando la checada de entrada ocurre después
+          de la hora esperada más la tolerancia.
+        - Se marca falta de entrada cuando no hay checada de entrada y ese día
+          era laborable para el colaborador.
+        - La misma lógica aplica de forma equivalente a la salida.
+        - Si el día no es laborable (por ser descanso, feriado, o una excepción
+          que lo marca así), no se generan faltas ni retardos.
+        - Una checada marcada como justificada no genera penalización aunque
+          haya retardo o falta.
+
+        Horas efectivas: se calculan únicamente dentro de la ventana del horario
+        esperado. Es decir, llegar antes de la hora de entrada o quedarse después
+        de la hora de salida no se contabiliza automáticamente como tiempo
+        trabajado adicional; las horas extra se gestionan y autorizan por
+        separado, no se generan solas a partir de la checada.
+
+        Descanso trabajado: cuando un colaborador checa entrada en un día que
+        para él era descanso (sin horario esperado ese día), el sistema lo
+        identifica como "descanso trabajado". Esto tampoco se convierte
+        automáticamente en horas extra: se señaliza y, según la configuración de
+        la empresa, se paga como descanso laborado o domingo laborado en la
+        nómina (ver Sección B.4).
+
+        De la asistencia a la prenómina: las incidencias del periodo (faltas,
+        retardos, vacaciones, permisos, incapacidades, días trabajados,
+        descansos laborados, domingos laborados, horas extra autorizadas) se
+        consolidan con esta prioridad:
+        Vacaciones > Permiso con goce > Permiso sin goce > Retardos > Faltas >
+        Incapacidades.
+        Estas incidencias alimentan directamente el cálculo de percepciones de
+        la nómina (ver Sección B.6 y B.7).
+
+        --- D.6 PREGUNTAS FRECUENTES DE HORARIOS Y ASISTENCIA ---
+
+        "No me marca la hora de entrada/salida correcta": revisar la plantilla
+        de horario asignada al colaborador (ver Sección A — "¿Por qué no sale la
+        hora de entrada o salida que quiero a un colaborador?").
+
+        "No se está registrando la asistencia en la prenómina": verificar que el
+        colaborador tenga un horario asignado y el check-in activado; después
+        revisar la configuración de tolerancia de entrada, porque cualquier
+        checada fuera de la ventana de tolerancia se registra como falta y no
+        como asistencia (ver Sección A).
+
+        "El colaborador trabajó su día de descanso y no le aparece como hora
+        extra": es el comportamiento esperado. El sistema no convierte
+        automáticamente un día de descanso trabajado en horas extra; ese tiempo
+        se identifica como descanso laborado o domingo laborado y se paga como
+        tal en la nómina, no como hora extra.
+
+        "El colaborador llegó antes o se quedó después de su horario y no le
+        contabilizó esas horas": también es el comportamiento esperado. Las
+        horas efectivas solo se calculan dentro de la ventana del horario
+        esperado; el tiempo adicional no se convierte solo en horas extra, debe
+        autorizarse aparte.
+
+        "¿Por qué un colaborador no tiene horario asignado y por eso no le
+        generan faltas?": si no hay ningún horario vigente para ese colaborador
+        (ni individual, ni de empresa, ni de organización), el sistema no tiene
+        una referencia de lo esperado ese día, por lo que no puede generar
+        faltas ni retardos hasta que se le asigne un horario.
+
+
+        ==================================================================
+        FIN DE LA BASE DE CONOCIMIENTO (SECCIÓN D)
         ==================================================================
       `,
-    };
+      };
 
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",

@@ -81,6 +81,15 @@ export async function POST(req: Request) {
         Nommy es un software de nómina y Recursos Humanos que automatiza procesos,
         elimina errores y mejora la experiencia de los empleados.
 
+       Cancelar | editar | modificar vacaciones, permisos o incidencias de un empleado:
+        1. Ve al menú de mis colaboradores
+        2. Haz clic en lista de colaboradores 
+        3. Selecciona el empleado del que quieras cancelar el permiso
+        4. Ve a incidencias
+        5. Haz clic en la cantidad de días que dura el permiso
+        6. Modifica el estatus a cancelado
+        7. Haz clic en guardar
+
         ASIGNAR ID O AGREGAR INFORMACIÓN FALTANTE A UN EMPLEADO
         1. Ve a Mis colaboradores y haz clic en Lista de colaboradores.
         2. Selecciona el colaborador al que deseas asignar un ID o agregar

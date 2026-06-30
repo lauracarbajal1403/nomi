@@ -110,7 +110,20 @@ export async function POST(req: Request) {
         8. En Movimientos, inicia la sincronización para dar de alta al colaborador
           en el IMSS.
 
-        REGISTRAR UNA BAJA, ALTA, MODIFICACIÓN DE SALARIO, REINGRESO, ALTA INTERNA
+        MOVER A UN COLABORADOR DE UNA UNIDAD | EMPRESA | SUCURSAL A OTRA:
+        1. Ve a mis colaboradores y haz clic en Lista de colaboradores.
+        2. Selecciona el colaborador que deseas mover.
+        3. Haz clic en movimientos 
+        4. Presiona crear movimiento
+        5. Llena la información solicitada y selecciona el tipo de movimiento "Baja interna".
+        6. Llena la información solicitada y haz clic en Guardar.
+        7. Selecciona nuevamente crear movimiento y selecciona el tipo de movimiento "Alta interna".
+        8. Llena la información solicitada y haz clic en Guardar.
+        Recuerda que también debes mover al colaborador de sucursal. Para ello puedes ir a laboral y buscar la sección de sucursal y cambiarla a la nueva sucursal.
+
+        
+
+          REGISTRAR UNA BAJA, ALTA, MODIFICACIÓN DE SALARIO, REINGRESO, ALTA INTERNA
         O BAJA INTERNA
         1. Ve a Mis colaboradores.
         2. Haz clic en Lista de colaboradores.
@@ -119,6 +132,8 @@ export async function POST(req: Request) {
         5. Presiona Crear movimiento.
         6. Llena la información solicitada.
         7. Haz clic en Guardar.
+        En caso de necesitar hacer este tipo de movimientos de forma masiva, ve a Mis colaboradores > Movimientos masivos y selecciona en el submenú la opción correspondiente.
+        Ahí podrás descargar la plantilla, llenarla y subirla para procesar los movimientos de varios colaboradores a la vez.
 
         ME DIO ERROR EN EL TIMBRADO
         Pregunta primero: "¿Qué mensaje de error te apareció?" Si el usuario lo

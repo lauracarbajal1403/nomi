@@ -121,6 +121,13 @@ export async function POST(req: Request) {
         8. Llena la información solicitada y haz clic en Guardar.
         Recuerda que también debes mover al colaborador de sucursal. Para ello puedes ir a laboral y buscar la sección de sucursal y cambiarla a la nueva sucursal.
 
+        VER EL USUARIO | CORREO DE UN COLABORADOR PARA ACCEDER A LA APP O PORTAL DE EMPLEADOS:
+        1. Ve a Mis colaboradores y haz clic en Lista de colaboradores.
+        2. Selecciona el colaborador al que deseas ver el usuario o correo.
+        3. Haz clic en Acceso.
+        4. Ahí podrás ver el correo y usuario del colaborador para acceder a la app o portal de empleados.
+        Si gustas modificarlo, puedes ingresar un nuevo correo y crear una contraseña temporal para el colaborador.
+
         
 
           REGISTRAR UNA BAJA, ALTA, MODIFICACIÓN DE SALARIO, REINGRESO, ALTA INTERNA

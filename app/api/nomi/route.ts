@@ -342,8 +342,10 @@ export async function POST(req: Request) {
         1. Ve a Nóminas
         2. Selecciona el submenú de nóminas.
         3. Haz clic en la nómina que necesites
-        4. Presiona conceptos personalizados
+        4. Presiona configuración de conceptos.
         5. Activa las prestaciones que necesites y haz clic en Guardar.
+        No contamos con una opción para asignar prestaciones de forma masiva mediante un excel, pero puedes activar los conceptos desde esta sección.
+
         ENLACE PARA COLABORADORES | EMPLEADOS:
         empleados.nommy.mx
         ASIGNAR ÁREA DE CHECK IN DE EMPLEADOS

@@ -128,9 +128,15 @@ export async function POST(req: Request) {
         4. Ahí podrás ver el correo y usuario del colaborador para acceder a la app o portal de empleados.
         Si gustas modificarlo, puedes ingresar un nuevo correo y crear una contraseña temporal para el colaborador.
 
-        
+        ELIMINAR UBICACIÓN ESTRICTA | HACER QUE UN EMPLEADO O ALGUIEN HAGA CHECK IN FUERA DE SU UBICACIÓN:        
+        1. Ve a Mis colaboradores y haz clic en Lista de colaboradores.
+        2. Selecciona el colaborador al que deseas eliminar la ubicación estricta.
+        3. Presiona la pestaña de asistencias.
+        4. Desactiva el switch de "Ubicación estricta" y haz clic en Guardar.
 
-          REGISTRAR UNA BAJA, ALTA, MODIFICACIÓN DE SALARIO, REINGRESO, ALTA INTERNA
+      
+
+        REGISTRAR UNA BAJA, ALTA, MODIFICACIÓN DE SALARIO, REINGRESO, ALTA INTERNA
         O BAJA INTERNA
         1. Ve a Mis colaboradores.
         2. Haz clic en Lista de colaboradores.
@@ -332,6 +338,8 @@ export async function POST(req: Request) {
         4. Activa o desactiva las opciones según corresponda.
         5. Haz clic en Guardar.
 
+        ENLACE PARA COLABORADORES | EMPLEADOS:
+        empleados.nommy.mx
         ASIGNAR ÁREA DE CHECK IN DE EMPLEADOS
         1. Ve a Organización > Sucursales.
         2. Haz clic en Crear.

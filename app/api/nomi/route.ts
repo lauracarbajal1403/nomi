@@ -347,6 +347,8 @@ export async function POST(req: Request) {
         No contamos con una opción para asignar prestaciones de forma masiva mediante un excel, pero puedes activar los conceptos desde esta sección.
         NOTIFICACIONES EN EL PORTAL DE EMPLEADOS:
         Actualmente no contamos con una opción para enviar notificaciones a los empleados desde el portal de empleados.
+        Pueden acceder a los comunicados y noticias desde el portal de empleados y la app móvil, pero no hay una opción para enviar notificaciones push o alertas a los empleados desde la plataforma.
+        Las publicaciones aparecen en la página de inicio del portal, por lo que al iniciar sesión los empleados podrán verlas. También pueden recibir notificaciones por correo electrónico si así lo configuran en su perfil.
         ENLACE PARA COLABORADORES | EMPLEADOS:
         empleados.nommy.mx
         ASIGNAR ÁREA DE CHECK IN DE EMPLEADOS

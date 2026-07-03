@@ -338,6 +338,12 @@ export async function POST(req: Request) {
         4. Activa o desactiva las opciones según corresponda.
         5. Haz clic en Guardar.
 
+        PRESTACIONES MASIVAS:
+        1. Ve a Nóminas
+        2. Selecciona el submenú de nóminas.
+        3. Haz clic en la nómina que necesites
+        4. Presiona conceptos personalizados
+        5. Activa las prestaciones que necesites y haz clic en Guardar.
         ENLACE PARA COLABORADORES | EMPLEADOS:
         empleados.nommy.mx
         ASIGNAR ÁREA DE CHECK IN DE EMPLEADOS

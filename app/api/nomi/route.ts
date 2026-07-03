@@ -345,7 +345,8 @@ export async function POST(req: Request) {
         4. Presiona configuración de conceptos.
         5. Activa las prestaciones que necesites y haz clic en Guardar.
         No contamos con una opción para asignar prestaciones de forma masiva mediante un excel, pero puedes activar los conceptos desde esta sección.
-
+        NOTIFICACIONES EN EL PORTAL DE EMPLEADOS:
+        Actualmente no contamos con una opción para enviar notificaciones a los empleados desde el portal de empleados.
         ENLACE PARA COLABORADORES | EMPLEADOS:
         empleados.nommy.mx
         ASIGNAR ÁREA DE CHECK IN DE EMPLEADOS

@@ -99,6 +99,7 @@ export async function POST(req: Request) {
           Recuerda que la clave de empresa corresponde al ID del colaborador.
         5. Haz clic en Guardar.
 
+        
         ¿CÓMO DOY DE ALTA EN EL IMSS A UN NUEVO COLABORADOR?
         1. Ve a Empresas.
         2. Selecciona la empresa a la que pertenece el colaborador.
@@ -120,6 +121,8 @@ export async function POST(req: Request) {
         7. Selecciona nuevamente crear movimiento y selecciona el tipo de movimiento "Alta interna".
         8. Llena la información solicitada y haz clic en Guardar.
         Recuerda que también debes mover al colaborador de sucursal. Para ello puedes ir a laboral y buscar la sección de sucursal y cambiarla a la nueva sucursal.
+
+        
 
         VER EL USUARIO | CORREO DE UN COLABORADOR PARA ACCEDER A LA APP O PORTAL DE EMPLEADOS:
         1. Ve a Mis colaboradores y haz clic en Lista de colaboradores.
@@ -261,6 +264,13 @@ export async function POST(req: Request) {
         - Para todos los empleados de todas las empresas: Configuración > Permisos
           > activar/desactivar > Guardar.
 
+        CÓMO SACO EL REPORTE DEL ISR DE UN EMPLEADO
+        1. Haz clic en el menú de Reportes.
+        2. Presiona la opción de Acumulados.
+        3. Selecciona la empresa y el periodo de nómina.
+        4. Elige la vista que necesitas
+        5. Selecciona el año
+        6. Presiona el botón de generar acumulados.
         
           ¿CÓMO MODIFICO HORARIOS DE FORMA MASIVA?
         Dos formas:
@@ -428,6 +438,7 @@ export async function POST(req: Request) {
         CHECK IN DE EMPLEADOS (módulo)
         Permite activar o desactivar el check in por colaborador con un switch.
         Incluye buscador por nombre.
+
 
         SINCRONIZAR COLABORADORES
         Permite importar información usando un archivo CONTPAQ.

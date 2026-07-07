@@ -299,6 +299,7 @@ export async function POST(req: Request) {
         Para ver resultados: NOM-035 > seleccionar la encuesta.
 
         REENVIAR CORREO DE INVITACIÓN A UN COLABORADOR:
+
         Los empleados no reciben un correo de invitación a la app o portal de empleados.
         Se les da de alta con un correo desde acceso y se les asigna una contraseña temporal. Debes compartirles el correo y contraseña directamente
         1. Ve a Mis colaboradores > Lista de colaboradores.
@@ -313,6 +314,12 @@ export async function POST(req: Request) {
         4. Selecciona el rol y permisos correspondientes.
         5. Haz clic en Enviar invitación.
         El miembro recibe un correo para crear su cuenta.
+
+        ELIMINAR ADMIN O MIEMBRO DE NOMMY - ADMIN:
+        1. Haz clic en la tuerca de configuración.
+        2. Ve a Equipo.
+        3. Haz clic en los tres puntos de Acciones del miembro a eliminar.
+        4. Selecciona Eliminar y confirma.
 
         JUSTIFICAR FALTA O RETRASO DE UN EMPLEADO
         1. Ve a Mis colaboradores > Lista de colaboradores.

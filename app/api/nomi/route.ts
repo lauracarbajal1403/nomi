@@ -105,6 +105,14 @@ export async function POST(req: Request) {
         Nommy es un software de nómina y Recursos Humanos que automatiza procesos,
         elimina errores y mejora la experiencia de los empleados.
 
+        CREAR UN PERIODO DE NÓMINA | CALCULAR UNA NÓMINA | TIMBRAR UNA NÓMINA | DISPERSAR UNA NÓMINA:
+        1. Ve a Nóminas.
+        2. Haz clic en Periodo de nóminas.
+        3. Selecciona la nómina a la que pertenece el colaborador.
+        4. Haz clic en Crear periodo.
+        5. Llena la información solicitada y haz clic en Guardar.
+        6. Selecciona el periodo que desees calcular.
+
        Cancelar | editar | modificar vacaciones, permisos o incidencias de un empleado:
         1. Ve al menú de mis colaboradores
         2. Haz clic en lista de colaboradores 

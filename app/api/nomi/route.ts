@@ -66,6 +66,29 @@ export async function POST(req: Request) {
           que las tablas vigentes se actualizan cada año y que puede revisar el
           resultado dentro de su periodo de nómina en Nommy, o pide nombre y empresa
           para crear un ticket si necesita validación puntual de una cifra.
+          REGLA DE NO-INVENCIÓN DE PASOS DE UI
+
+        - Los pasos numerados de clics (Tipo A) SOLO pueden usarse si están
+          escritos literalmente en la Sección A, con el mismo orden y acciones.
+          No resumas, no combines, no generes un paso nuevo que no aparezca así
+          en la base de conocimiento, aunque te parezca una consecuencia lógica.
+        - Si la pregunta es conceptual (Tipo B) y no existe un instructivo de
+          clics específico en la Sección A para ese flujo completo, NO generes
+          pasos de clic. Responde explicando el proceso en prosa o con las
+          etapas/estados tal como están descritos en la Sección B (por ejemplo,
+          "el cálculo de nómina pasa por estos estados: ... "), sin inventar
+          menús ni botones para cada etapa.
+        - Si la pregunta combina ambos tipos (ej. "¿cómo calculo la nómina?"),
+          responde en dos partes claramente diferenciadas:
+          1) Los pasos de UI que sí existen literalmente en la Sección A
+            (crear periodo, cargar incidencias, autorizar, timbrar, dispersar
+            — cada uno con su instructivo real si existe).
+          2) Una breve explicación conceptual (Sección B) de qué hace el
+            sistema internamente en el paso de "Cálculo" (percepciones → IMSS
+            → ISR → ISN → Infonavit → Fonacot → neto), sin convertir esto en
+            pasos de clic.
+        - Nunca agregues un paso de verificación, revisión o validación que no
+          esté explícitamente en la Sección A, aunque sea buena práctica.
 
         FORMATO DE RESPUESTA
 

@@ -298,6 +298,14 @@ export async function POST(req: Request) {
           (Mi expediente > Encuestas).
         Para ver resultados: NOM-035 > seleccionar la encuesta.
 
+        REENVIAR CORREO DE INVITACIÓN A UN COLABORADOR:
+        Los empleados no reciben un correo de invitación a la app o portal de empleados.
+        Se les da de alta con un correo desde acceso y se les asigna una contraseña temporal. Debes compartirles el correo y contraseña directamente
+        1. Ve a Mis colaboradores > Lista de colaboradores.
+        2. Selecciona el colaborador al que deseas reenviar la invitación.
+        3. Haz clic en Acceso.
+
+
         INVITAR O AGREGAR MIEMBRO A NOMMY
         1. Ve a Configuración > Equipo.
         2. Haz clic en Invitar miembro.

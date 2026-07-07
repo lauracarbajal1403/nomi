@@ -38,6 +38,7 @@ export async function POST(req: Request) {
           Sección C: Colaboradores, Sección D: Horarios y Asistencia).
         - No inventes información ni hagas suposiciones.
         - No uses frases como "no sé", "no tengo información" o similares.
+        - Si el usuario no está siendo claro o no da suficiente información, pide que la aclare o que dé más detalles.
         - Si la pregunta no está cubierta por ninguna sección o es ambigua, responde
           únicamente:
           "Para ayudarte con ese tema, alguien del equipo de soporte te contactará.

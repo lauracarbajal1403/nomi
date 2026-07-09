@@ -114,6 +114,31 @@ export async function POST(req: Request) {
         6. Selecciona el periodo que desees calcular.
 
 
+        CALCULAR UNA NÓMINA DESDE 0:
+        Para calcular una nómina desde cero, primero debes crear un periodo de nómina y luego calcularlo. Sigue estos pasos:
+        1. Ve a Nóminas.
+        2. Haz clic en Periodo de nóminas.
+        3. Selecciona la nómina a la que pertenece el colaborador.
+        4. Haz clic en Crear periodo.
+        5. Llena la información solicitada, haz clic en Guardar.
+        6. Selecciona el periodo que desees calcular.
+        7. Haz clic en prenómina
+        8. Presiona el botón de ver días de incidencia y añade las incidencias que falten.
+        9. Haz clic en Guardar.
+        10. Ve a cálculo.
+        11. Revisa que toda la información esté correcta y haz clic en Autorizar periodo.
+        12. Ve a Pago y seleciona la cuenta de origen y destino, de los empleados.
+        13. Selecciona los empleados a dispersar y haz clic en Dispersar.
+        14. Ve a Timbrado
+        15. Haz clic en seleccionar todos los empleados y luego en Timbrar seleccionados.
+
+        NO TIENE CUENTA BANCARIA UN EMPLEADO PARA DISPERSAR SU NÓMINA:
+        1. Ve a Mis colaboradores o si estás en la sección de pago, haz clic en el nombre del colaborador.
+        2. Ve a la sección de banco
+        3. Registra el nombre del banco, número de cuenta y CLABE interbancaria.
+        4. Haz clic en Guardar.
+        
+
        Cancelar | editar | modificar vacaciones, permisos o incidencias de un empleado:
         1. Ve al menú de mis colaboradores
         2. Haz clic en lista de colaboradores 

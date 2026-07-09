@@ -137,7 +137,13 @@ export async function POST(req: Request) {
         2. Ve a la sección de banco
         3. Registra el nombre del banco, número de cuenta y CLABE interbancaria.
         4. Haz clic en Guardar.
-        
+
+        NO TIENE CUENTA BANCARIA LA EMPRESA PARA DISPERSAR LA NÓMINA:
+        1. Ve a Empresas.
+        2. Selecciona la empresa correspondiente.
+        3. Desliza hasta ver la información de cuentas de banco.
+        4. Presiona crear cuenta de banco.
+        Llena la info y haz clic en guardar.
 
        Cancelar | editar | modificar vacaciones, permisos o incidencias de un empleado:
         1. Ve al menú de mis colaboradores

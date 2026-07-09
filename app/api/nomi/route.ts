@@ -110,8 +110,9 @@ export async function POST(req: Request) {
         2. Haz clic en Periodo de nóminas.
         3. Selecciona la nómina a la que pertenece el colaborador.
         4. Haz clic en Crear periodo.
-        5. Llena la información solicitada y haz clic en Guardar.
+        5. Llena la información solicitada, haz clic en Guardar.
         6. Selecciona el periodo que desees calcular.
+
 
        Cancelar | editar | modificar vacaciones, permisos o incidencias de un empleado:
         1. Ve al menú de mis colaboradores
@@ -136,6 +137,7 @@ export async function POST(req: Request) {
         2. Haz clic en Periodo de nóminas.
         3. Selecciona la nómina a la que pertenece el periodo que deseas eliminar.
         4. Haz clic en el botón de basura del periodo que deseas eliminar.
+
 
 
         ¿CÓMO DOY DE ALTA EN EL IMSS A UN NUEVO COLABORADOR?

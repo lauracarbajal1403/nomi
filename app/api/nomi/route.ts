@@ -131,7 +131,13 @@ export async function POST(req: Request) {
           Recuerda que la clave de empresa corresponde al ID del colaborador.
         5. Haz clic en Guardar.
 
-        
+        ELIMINAR PRENÓMINA | PERIODO DE NÓMINA:
+        1. Ve a Nóminas.
+        2. Haz clic en Periodo de nóminas.
+        3. Selecciona la nómina a la que pertenece el periodo que deseas eliminar.
+        4. Haz clic en el botón de basura del periodo que deseas eliminar.
+
+
         ¿CÓMO DOY DE ALTA EN EL IMSS A UN NUEVO COLABORADOR?
         1. Ve a Empresas.
         2. Selecciona la empresa a la que pertenece el colaborador.

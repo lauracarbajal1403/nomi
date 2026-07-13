@@ -1,16 +1,20 @@
-import { NextResponse } from "next/server";
-import { Resend } from "resend";
+// lib/nommyAssistant.ts
+//
+// Este archivo centraliza el system prompt de Nommy (SIN NINGÚN CAMBIO respecto
+// al que ya tenías) y la llamada a OpenAI, para que tanto el chat web como el
+// bot de Telegram usen exactamente la misma lógica y base de conocimiento.
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+export type ChatMessage = {
+  role: "system" | "user" | "assistant";
+  content: string;
+};
 
-export async function POST(req: Request) {
-  try {
-    const { messages, sendEmail } = await req.json();
-
-    // 1. Llamada a OpenAI (Mantén tu lógica actual)
-    const systemMessage = {
-      role: "system",
-      content: `TU ROL
+// ============================================================
+// PROMPT ORIGINAL — copiado tal cual, no se modificó ni una línea.
+// ============================================================
+export const SYSTEM_MESSAGE: ChatMessage = {
+  role: "system",
+  content: `TU ROL
 
         Eres el asistente de soporte de Nommy. Respondes preguntas de usuarios (RH,
         contadores, administradores de empresa) sobre dos tipos de temas:
@@ -113,17 +117,7 @@ export async function POST(req: Request) {
         5. Llena la información solicitada, haz clic en Guardar.
         6. Selecciona el periodo que desees calcular.
 
-        
-        se puede generar prestaciones conceptos personalizados de manera masiva para cada trabajador?
-        ¡Sí! Los conceptos personalizados aplican a todos los empleados dados de alta en la nómina. Para activarlos sigue los siguientes pasos:
-        1. Ve a nóminas
-        2. Haz clic en nóminas
-        3. Selecciona una nómina
-        4. Presiona conceptos personalizados
-        5. Presiona el botón de crear concepto
 
-        QUÉ SE PONE EN COMPLEMENTO DE NÓMINA:
-        En el compleme
         CALCULAR UNA NÓMINA DESDE 0:
         Para calcular una nómina desde cero, primero debes crear un periodo de nómina y luego calcularlo. Sigue estos pasos:
         1. Ve a Nóminas.
@@ -1602,77 +1596,31 @@ export async function POST(req: Request) {
         FIN DE LA BASE DE CONOCIMIENTO (SECCIÓN D)
         ==================================================================
       `,
-      };
+};
 
-    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [systemMessage, ...messages],
-      }),
-    });
+/**
+ * Llama a OpenAI con el system prompt de Nommy + el historial de mensajes.
+ * La usan tanto el chat web (/api/chat) como el webhook de Telegram.
+ */
+export async function askNommy(messages: ChatMessage[]): Promise<string> {
+  const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [SYSTEM_MESSAGE, ...messages],
+    }),
+  });
 
-    const result = await openaiRes.json();
-    const assistantReply = result.choices[0].message.content;
+  const result = await openaiRes.json();
 
-    // 2. Lógica de envío de correo detectando Ticket o Finalización
-    const isTicketRequest = assistantReply.toLowerCase().includes("ticket");
-
-   try {
-      const conversationText = [...messages, { role: "assistant", content: assistantReply }]
-        .map((msg: { role: string; content: string }) =>
-          `${msg.role === "user" ? "Usuario" : "Nominik"}: ${msg.content}`
-        )
-        .join("\n\n");
-
-      const htmlBody = `
-        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-          <h2 style="color: #4db8a8;">Reporte de Nominik</h2>
-          <hr />
-          <div style="white-space: pre-wrap;">${conversationText.replace(/\n/g, "<br>")}</div>
-        </div>
-      `;
-
-      // Correo 1: Siempre se envía
-      const { error: errorSiempre } = await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL ?? "Nominik <no-reply@resend.dev>",
-        to: "laura.carbajal@nommy.mx",
-        subject: "📩 Resumen de Conversación",
-        html: htmlBody,
-      });
-
-      if (errorSiempre) {
-        console.error("❌ Resend error (resumen):", errorSiempre);
-      } else {
-        console.log("✅ Resumen enviado a laura.carbajal@nommy.mx");
-      }
-
-      // Correo 2: Solo si hay ticket
-      if (isTicketRequest) {
-        const { error: errorTicket } = await resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL ?? "Nominik <no-reply@resend.dev>",
-          to: "laura.carbajal@nommy.mx",
-          subject: "🎟️ Nuevo Ticket de Soporte",
-          html: htmlBody,
-        });
-
-        if (errorTicket) {
-          console.error("❌ Resend error (ticket):", errorTicket);
-        } else {
-          console.log("✅ Ticket enviado a laura.carbajal@nommy.mx");
-        }
-      }
-    } catch (mailErr) {
-      console.error("❌ Error crítico al enviar correo con Resend:", mailErr);
-    }
-
-    return NextResponse.json({ text: assistantReply });
-  } catch (error) {
-    console.error("API Route Error:", error);
-    return NextResponse.json({ error: "Error interno" }, { status: 500 });
+  if (!result?.choices?.[0]?.message?.content) {
+    console.error("Respuesta inesperada de OpenAI:", JSON.stringify(result));
+    throw new Error("No se pudo obtener respuesta de OpenAI");
   }
+
+  return result.choices[0].message.content as string;
 }

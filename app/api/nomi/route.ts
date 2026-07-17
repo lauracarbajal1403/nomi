@@ -1360,6 +1360,9 @@ export async function POST(req: Request) {
         -Bitácoras:
         La bitácora es un espacio donde el colaborador puede registrar las actividades que ha realizado a lo largo del día junto con la cantidad de horas por día que le dedica a dicha actividad.
         Las actividades de bitácora en departamento son un banco de actividades que se pueden asignar a los colaboradores de un departamento, y el colaborador puede seleccionar de ese banco de actividades para registrar su actividad diaria.
+        
+        - Trámites disponibles:
+        Los trámites disponibles están disponibles para que el colaborador pueda realizar solicitudes de manera digital a través de la plataforma online.nommy.mx
 
 
         ==================================================================
